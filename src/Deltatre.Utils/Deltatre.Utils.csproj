@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
+	  <RootNamespace>Deltatre.Utils</RootNamespace>
+	  <Authors>Webplu</Authors>
+	  <Company>Deltatre</Company>
+	  <Description>Utils library</Description>
+	  <PackageTags>C# .NET</PackageTags>
+	  <IncludeSymbols>True</IncludeSymbols>
+	  <IncludeSource>True</IncludeSource>
+	  <PackageProjectUrl>https://github.com/deltatre-webplu/deltatre.utils</PackageProjectUrl>
+	  <RepositoryUrl>https://github.com/deltatre-webplu/deltatre.utils</RepositoryUrl>
+	  <RepositoryType>git</RepositoryType>
+	  <Version>0.0.1</Version>
   </PropertyGroup>
 
 </Project>
