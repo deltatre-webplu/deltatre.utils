@@ -27,3 +27,4 @@ namespace Deltatre.Utils.Extensions.Enumerable
       }
     }
 }
+
