@@ -27,6 +27,21 @@ namespace Deltatre.Utils.Extensions.Enumerable
 			foreach (var item in source)
 				toBeDone(item);
 		}
+
+		/// <exception cref="ArgumentNullException">Throws ArgumenNullException when parameter source is null</exception>
+		/// <remarks> Use default equality comparer if parameter comparer is not specified </remarks>
+		public static bool HasDuplicates<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			var equalityComparer = comparer ?? EqualityComparer<T>.Default;
+
+			var set = new HashSet<T>(equalityComparer);
+
+			var hasDuplicates = !source.All(set.Add);
+			return hasDuplicates;
+		}
 	}
 }
 

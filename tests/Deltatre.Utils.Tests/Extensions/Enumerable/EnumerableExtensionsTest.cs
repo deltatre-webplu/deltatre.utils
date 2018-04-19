@@ -69,6 +69,68 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
       // ASSERT
       CollectionAssert.AreEqual(new List<string> {"this", "is", "a", "test"}, strings);
     }
-  }
+
+	  [Test]
+	  public void HasDuplicates_Throws_When_Source_Is_Null()
+	  {
+		  // ACT
+		  Assert.Throws<ArgumentNullException>(() => EnumerableExtensions.HasDuplicates<string>(null));
+	  }
+
+	  [Test]
+	  public void HasDuplicates_Returns_False_When_Items_In_Source_Are_Distinct()
+	  {
+			// ARRANGE
+		  var target = new[] {"foo", "bar"};
+
+		  // ACT
+		  var result = target.HasDuplicates();
+
+			// ASSERT
+			Assert.IsFalse(result);
+	  }
+
+	  [Test]
+	  public void HasDuplicates_Returns_True_When_Source_Has_Duplicates()
+	  {
+		  // ARRANGE
+		  var target = new[] { "foo", "bar", "foo", "hello", "hello", "world", "bar", "webplu", "foo" };
+
+		  // ACT
+		  var result = target.HasDuplicates();
+
+		  // ASSERT
+		  Assert.IsTrue(result);
+	  }
+
+	  [Test]
+	  public void HasDuplicates_Returns_False_When_Items_In_Source_Are_Distinct_Based_On_Default_Comparer()
+	  {
+		  // ARRANGE
+		  var target = new[] { "foo", "bar", "HELLO", "WorlD" };
+		  var comparer = StringComparer.InvariantCultureIgnoreCase;
+
+		  // ACT
+		  var result = target.HasDuplicates(comparer);
+
+		  // ASSERT
+		  Assert.IsFalse(result);
+	  }
+
+	  [Test]
+	  public void HasDuplicates_Returns_True_When_Source_Has_Duplicates_Based_On_Default_Comparer()
+	  {
+		  // ARRANGE
+		  var target = new[] { "foo", "bar", "FOO", "FOO", "baR", "hello", "world", "HellO", "webplu" };
+		  var comparer = StringComparer.InvariantCultureIgnoreCase;
+
+		  // ACT
+		  var result = target.HasDuplicates(comparer);
+
+		  // ASSERT
+		  Assert.IsTrue(result);
+	  }
+
+	}
 }
 
