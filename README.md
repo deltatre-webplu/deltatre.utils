@@ -6,3 +6,4 @@ Following utils are currently available:
 - extension methods on Dictionary
 - extension methods on IEnumerable
 - a timer class to schedule one time or recurring workloads
+- some DTO classes for common tasks
