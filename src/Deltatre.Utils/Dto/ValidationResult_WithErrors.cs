@@ -28,6 +28,14 @@ namespace Deltatre.Utils.Dto
 		}
 
 		/// <summary>
+		/// Call this method to create an instance representing the result of a successful validation. The list of errors will be set to an empty list.
+		/// </summary>
+		/// <param name="validatedValue">The result produced from the validation process.</param>
+		/// <returns>An instance representing the result of a successful validation.</returns>
+		public static ValidationResult<TValue, TError> CreateValid(TValue validatedValue) => 
+			new ValidationResult<TValue, TError>(true, validatedValue, Enumerable.Empty<TError>());
+
+		/// <summary>
 		/// Indicates whether the value that was validated is valid 
 		/// </summary>
 		public bool IsValid { get; }

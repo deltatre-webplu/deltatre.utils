@@ -45,5 +45,19 @@ namespace Deltatre.Utils.Tests.Dto
 			Assert.IsNotNull(result.Errors);
 			Assert.IsEmpty(result.Errors);
 		}
+
+		[Test]
+		public void CreateValid_Creates_Valid_Result()
+		{
+			// ACT
+			var result = ValidationResult<string, string>.CreateValid("my validated value");
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.IsValid);
+			Assert.AreEqual("my validated value", result.ValidatedValue);
+			Assert.IsNotNull(result.Errors);
+			Assert.IsEmpty(result.Errors);
+		}
 	}
 }
