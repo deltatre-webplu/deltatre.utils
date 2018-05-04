@@ -21,7 +21,10 @@ namespace Deltatre.Utils.Dto
 		/// <remarks>Property ValidatedValue will be set equal to the default value of type TValue.</remarks>
 		public static ValidationResult<TValue, TError> CreateInvalid(IEnumerable<TError> errors)
 		{
-			throw new NotImplementedException();
+			if (errors == null)
+				throw new ArgumentNullException(nameof(errors));
+
+			return new ValidationResult<TValue, TError>(false, default(TValue), errors);
 		}
 
 		/// <summary>
