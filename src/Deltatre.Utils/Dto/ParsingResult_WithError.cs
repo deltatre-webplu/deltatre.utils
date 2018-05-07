@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Deltatre.Utils.Types;
 
 namespace Deltatre.Utils.Dto
 {
@@ -19,12 +20,12 @@ namespace Deltatre.Utils.Dto
 		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter errors is null</exception>
 		/// <returns>An instance representing the result of a failed parsing.</returns>
 		/// <remarks>Property ParsedValue will be set equal to the default value of type TValue.</remarks>
-		public static ParsingResult<TValue, TError> CreateInvalid(IEnumerable<TError> errors)
+		public static ParsingResult<TValue, TError> CreateInvalid(NonEmptySequence<TError> errors)
 		{
 			if (errors == null)
 				throw new ArgumentNullException(nameof(errors));
 
-			return new ParsingResult<TValue, TError>(false, default(TValue), errors);
+			return new ParsingResult<TValue, TError>(default(TValue), errors);
 		}
 
 		/// <summary>
@@ -33,12 +34,12 @@ namespace Deltatre.Utils.Dto
 		/// <param name="parsedValue">The result produced from the parsing process.</param>
 		/// <returns>An instance representing the result of a successful parsing.</returns>
 		public static ParsingResult<TValue, TError> CreateValid(TValue parsedValue) =>
-			new ParsingResult<TValue, TError>(true, parsedValue, Enumerable.Empty<TError>());
+			new ParsingResult<TValue, TError>(parsedValue, Enumerable.Empty<TError>());
 
 		/// <summary>
 		/// Indicates whether the value that was parsed is valid 
 		/// </summary>
-		public bool IsValid { get; }
+		public bool IsValid => !Errors.Any();
 
 		/// <summary>
 		/// This is the result produced from the parsing process. In case of failed parsing it will be set to the default value of type TValue.
@@ -50,9 +51,8 @@ namespace Deltatre.Utils.Dto
 		/// </summary>
 		public ReadOnlyCollection<TError> Errors { get; }
 
-		private ParsingResult(bool isValid, TValue parsedValue, IEnumerable<TError> errors)
+		private ParsingResult(TValue parsedValue, IEnumerable<TError> errors)
 		{
-			IsValid = isValid;
 			ParsedValue = parsedValue;
 			Errors = new ReadOnlyCollection<TError>(errors.ToList());
 		}

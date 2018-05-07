@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using Deltatre.Utils.Dto;
+using Deltatre.Utils.Extensions.Enumerable;
 using NUnit.Framework;
 
 namespace Deltatre.Utils.Tests.Dto
@@ -19,7 +19,7 @@ namespace Deltatre.Utils.Tests.Dto
 		public void CreateInvalid_Allows_To_Create_An_Invalid_Result_With_Errors()
 		{
 			// ARRANGE
-			var errors = new[] { "something bad occurred", "invalid prefix detected" };
+			var errors = new[] { "something bad occurred", "invalid prefix detected" }.ToNonEmptySequence();
 
 			// ACT
 			var result = ParsingResult<string, string>.CreateInvalid(errors);
@@ -30,20 +30,6 @@ namespace Deltatre.Utils.Tests.Dto
 			Assert.IsNull(result.ParsedValue);
 			Assert.IsNotNull(result.Errors);
 			CollectionAssert.AreEqual(errors, result.Errors);
-		}
-
-		[Test]
-		public void CreateInvalid_Allows_To_Create_An_Invalid_Result_Without_Specifying_Any_Error()
-		{
-			// ACT
-			var result = ParsingResult<string, string>.CreateInvalid(Enumerable.Empty<string>());
-
-			// ASSERT
-			Assert.IsNotNull(result);
-			Assert.IsFalse(result.IsValid);
-			Assert.IsNull(result.ParsedValue);
-			Assert.IsNotNull(result.Errors);
-			Assert.IsEmpty(result.Errors);
 		}
 
 		[Test]
