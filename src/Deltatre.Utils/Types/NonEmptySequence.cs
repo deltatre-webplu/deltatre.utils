@@ -15,6 +15,7 @@ namespace Deltatre.Utils.Types
 		private readonly T[] _items;
 
 		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter items is null</exception>
+		/// <exception cref="ArgumentException">Throws ArgumentException when parameter items is an empty sequence</exception>
 		public NonEmptySequence(IEnumerable<T> items)
 		{
 			if (items == null)
