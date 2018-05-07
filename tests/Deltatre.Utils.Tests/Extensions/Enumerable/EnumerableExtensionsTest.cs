@@ -131,6 +131,26 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  Assert.IsTrue(result);
 	  }
 
+	  [Test]
+	  public void ToNonEmptySequence_Throws_When_Parameter_Source_Is_Null()
+	  {
+			// ACT
+		  Assert.Throws<ArgumentNullException>(() => EnumerableExtensions.ToNonEmptySequence<string>(null));
+	  }
+
+	  [Test]
+	  public void ToNonEmptySequence_Creates_Non_Empty_Sequence()
+	  {
+			// ARRANGE
+		  var items = new[] {"foo", "bar"};
+
+		  // ACT
+		  var result = items.ToNonEmptySequence();
+
+		  // ASSERT
+			Assert.IsNotNull(result);
+			CollectionAssert.AreEqual(new[] { "foo", "bar" }, result);
+	  }
 	}
 }
 

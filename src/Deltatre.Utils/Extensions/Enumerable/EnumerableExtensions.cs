@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Deltatre.Utils.Types;
 
 namespace Deltatre.Utils.Extensions.Enumerable
 {
@@ -41,6 +42,15 @@ namespace Deltatre.Utils.Extensions.Enumerable
 
 			var hasDuplicates = !source.All(set.Add);
 			return hasDuplicates;
+		}
+
+		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter source is null</exception>
+		public static NonEmptySequence<T> ToNonEmptySequence<T>(this IEnumerable<T> source)
+		{
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			return new NonEmptySequence<T>(source);
 		}
 	}
 }

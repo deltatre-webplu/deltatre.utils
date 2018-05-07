@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Deltatre.Utils.Types;
 
 namespace Deltatre.Utils.Dto
 {
@@ -19,12 +20,12 @@ namespace Deltatre.Utils.Dto
 		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter errors is null</exception>
 		/// <returns>An instance representing the result of a failed normalization.</returns>
 		/// <remarks>Property NormalizedValue will be set equal to the default value of type TValue.</remarks>
-		public static NormalizationResult<TValue, TError> CreateInvalid(IEnumerable<TError> errors)
+		public static NormalizationResult<TValue, TError> CreateInvalid(NonEmptySequence<TError> errors)
 		{
 			if (errors == null)
 				throw new ArgumentNullException(nameof(errors));
 
-			return new NormalizationResult<TValue, TError>(false, default(TValue), errors);
+			return new NormalizationResult<TValue, TError>(default(TValue), errors);
 		}
 
 		/// <summary>
@@ -33,12 +34,12 @@ namespace Deltatre.Utils.Dto
 		/// <param name="normalizedValue">The result produced from the normalization process.</param>
 		/// <returns>An instance representing the result of a successful normalization.</returns>
 		public static NormalizationResult<TValue, TError> CreateValid(TValue normalizedValue) =>
-			new NormalizationResult<TValue, TError>(true, normalizedValue, Enumerable.Empty<TError>());
+			new NormalizationResult<TValue, TError>(normalizedValue, Enumerable.Empty<TError>());
 
 		/// <summary>
 		/// Indicates whether the value that was normalized is valid 
 		/// </summary>
-		public bool IsValid { get; }
+		public bool IsValid => !Errors.Any();
 
 		/// <summary>
 		/// This is the result produced from the normalization process. In case of failed normalization it will be set to the default value of type TValue.
@@ -50,9 +51,8 @@ namespace Deltatre.Utils.Dto
 		/// </summary>
 		public ReadOnlyCollection<TError> Errors { get; }
 
-		private NormalizationResult(bool isValid, TValue normalizedValue, IEnumerable<TError> errors)
+		private NormalizationResult(TValue normalizedValue, IEnumerable<TError> errors)
 		{
-			IsValid = isValid;
 			NormalizedValue = normalizedValue;
 			Errors = new ReadOnlyCollection<TError>(errors.ToList());
 		}
