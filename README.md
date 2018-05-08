@@ -5,9 +5,9 @@ The purpose of this library is to provide developers with extension methods, DTO
 
 ## DTO
 Following data transfer objects are available:
-- NormalizationResult<T> and NormalizationResult<TValue, TError> to provide results from normalization tasks
-- ValidationResult<T> and ValidationResult<TValue, TError> to provide results from validation tasks
-- ParsingResult<T> and ParsingResult<TValue, TError> to provide results from parsing tasks
+- NormalizationResult<TValue> and NormalizationResult<TValue, TError> to provide results from normalization tasks
+- ValidationResult<TValue> and ValidationResult<TValue, TError> to provide results from validation tasks
+- ParsingResult<TValue> and ParsingResult<TValue, TError> to provide results from parsing tasks
 
 ## DICTIONARY EXTENSIONS
 Following extension methods are available for dictionary:
@@ -15,7 +15,7 @@ Following extension methods are available for dictionary:
 
 ## ENUMERABLE EXTENSIONS
 Following extension methods are available for IEnumerable:
-- IsNullOrEmpty<T>: checks whether an instance of IEnumerable<T> is null or empty
-- ForEach<T>: invokes an instance of Action<T> for each item inside an instance of IEnumerable<T>
-- HasDuplicates<T>: checks whether an instance of IEnumerable<T> contains duplicates. Optionally you can provide a comparer (an instance of IEqualityComparer<T>)
-- ToNonEmptySequence<T>: converts an instance of IEnumerable<T> to an instance of NonEmptySequence<T>
+- IsNullOrEmpty<TITem>: checks whether an instance of IEnumerable<TITem> is null or empty
+- ForEach<TITem>: invokes an instance of Action<TITem> for each item inside an instance of IEnumerable<TITem>
+- HasDuplicates<TITem>: checks whether an instance of IEnumerable<TITem> contains duplicates. Optionally you can provide a comparer (an instance of IEqualityComparer<TITem>)
+- ToNonEmptySequence<TITem>: converts an instance of IEnumerable<TITem> to an instance of NonEmptySequence<TITem>
