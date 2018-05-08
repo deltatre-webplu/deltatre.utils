@@ -3,7 +3,7 @@
 This is an utils library used inside Webplu team for all .NET projects.  
 The purpose of this library is to provide developers with extension methods, DTO and types useful to solve common problems, such as checking if a sequence is null or empty or convert a dictionary to a read only dictionary.
 
-## Dto
+## DTO
 Following data transfer objects are available:
 - NormalizationResult<TValue> and NormalizationResult<TValue, TError> to provide results from normalization tasks
 - ValidationResult<TValue> and ValidationResult<TValue, TError> to provide results from validation tasks
