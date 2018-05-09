@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Deltatre.Utils.Dto
+﻿namespace Deltatre.Utils.Dto
 {
 	/// <summary>
 	/// This class represents the result for the operation of fetching an item from a source
@@ -11,7 +7,7 @@ namespace Deltatre.Utils.Dto
 	public class GetItemResult<T>
 	{
 		/// <summary>
-		/// Use this method to create an instance representing a successfull get operation (a get operation in which the item was found).
+		/// Use this method to create an instance representing a successful get operation (a get operation in which the item was found).
 		/// </summary>
 		/// <param name="item">The fetched item</param>
 		/// <returns>An instance representing a get operation in which the item was found</returns>
