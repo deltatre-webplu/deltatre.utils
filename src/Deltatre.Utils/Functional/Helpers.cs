@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Deltatre.Utils.Dto;
 
 namespace Deltatre.Utils.Functional
