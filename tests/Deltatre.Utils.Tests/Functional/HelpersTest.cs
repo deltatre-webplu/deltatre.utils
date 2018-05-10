@@ -8,11 +8,11 @@ namespace Deltatre.Utils.Tests.Functional
 	public class HelpersTest
 	{
 		[Test]
-		public void GetFirst_Throws_When_Source_Is_Null()
+		public void GetiFirst_WithProjection_Throws_When_Source_Is_Null()
 		{
 			// ARRANGE
-			Func<string, bool> startsWithLetterMCaseInsensitive = item => 
-				item != null 
+			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
+				item != null
 				&& item.StartsWith("M", StringComparison.InvariantCultureIgnoreCase);
 
 			Func<string, int> toLength = item => item.Length;
@@ -22,10 +22,10 @@ namespace Deltatre.Utils.Tests.Functional
 		}
 
 		[Test]
-		public void GetFirst_Throws_When_Predicate_Is_Null()
+		public void GetiFirst_WithProjection_Throws_When_Predicate_Is_Null()
 		{
 			// ARRANGE
-			var source = new[] {"foo", "bar"};
+			var source = new[] { "foo", "bar" };
 
 			Func<string, int> toLength = item => item.Length;
 
@@ -34,7 +34,7 @@ namespace Deltatre.Utils.Tests.Functional
 		}
 
 		[Test]
-		public void GetFirst_Throws_When_Projection_Is_Null()
+		public void GetiFirst_WithProjection_Throws_When_Projection_Is_Null()
 		{
 			// ARRANGE
 			var source = new[] { "foo", "bar" };
@@ -50,7 +50,7 @@ namespace Deltatre.Utils.Tests.Functional
 		}
 
 		[Test]
-		public void GetFirst_Returns_Result_For_Item_Not_Found_When_None_Of_Items_Satisfies_Predicate()
+		public void GetiFirst_WithProjection_Returns_Result_For_Item_Not_Found_When_None_Of_Items_Satisfies_Predicate()
 		{
 			// ARRANGE
 			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
@@ -71,7 +71,7 @@ namespace Deltatre.Utils.Tests.Functional
 		}
 
 		[Test]
-		public void GetFirst_Returns_Result_For_Item_Found_When_One_Of_Items_Satisfies_Predicate()
+		public void GetiFirst_WithProjection_Returns_Result_For_Item_Found_When_One_Of_Items_Satisfies_Predicate()
 		{
 			// ARRANGE
 			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
@@ -92,7 +92,7 @@ namespace Deltatre.Utils.Tests.Functional
 		}
 
 		[Test]
-		public void GetFirst_Returns_Result_For_First_Item_Found_When_Many_Of_Items_Satisfies_Predicate()
+		public void GetiFirst_WithProjection_Returns_Result_For_First_Item_Found_When_Many_Of_Items_Satisfies_Predicate()
 		{
 			// ARRANGE
 			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
@@ -110,6 +110,85 @@ namespace Deltatre.Utils.Tests.Functional
 			Assert.IsNotNull(result);
 			Assert.IsTrue(result.Found);
 			Assert.AreEqual(7, result.Item);
+		}
+
+		[Test]
+		public void GetiFirst_Throws_When_Source_Is_Null()
+		{
+			// ARRANGE
+			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
+				item != null
+				&& item.StartsWith("M", StringComparison.InvariantCultureIgnoreCase);
+
+			// ACT
+			Assert.Throws<ArgumentNullException>(() => GetFirst(null, startsWithLetterMCaseInsensitive));
+		}
+
+		[Test]
+		public void GetiFirst_Throws_When_Predicate_Is_Null()
+		{
+			// ARRANGE
+			var source = new[] { "foo", "bar" };
+
+			// ACT
+			Assert.Throws<ArgumentNullException>(() => GetFirst(source, null));
+		}
+
+		[Test]
+		public void GetiFirst_Returns_Result_For_Item_Not_Found_When_None_Of_Items_Satisfies_Predicate()
+		{
+			// ARRANGE
+			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
+				item != null
+				&& item.StartsWith("M", StringComparison.InvariantCultureIgnoreCase);
+
+			var source = new[] { "foo", "bar" };
+
+			// ACT
+			var result = GetFirst(source, startsWithLetterMCaseInsensitive);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.Found);
+			Assert.AreEqual(default(string), result.Item);
+		}
+
+		[Test]
+		public void GetiFirst_Returns_Result_For_Item_Found_When_One_Of_Items_Satisfies_Predicate()
+		{
+			// ARRANGE
+			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
+				item != null
+				&& item.StartsWith("M", StringComparison.InvariantCultureIgnoreCase);
+
+			var source = new[] { "foo", "minimum" };
+
+			// ACT
+			var result = GetFirst(source, startsWithLetterMCaseInsensitive);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.Found);
+			Assert.AreEqual("minimum", result.Item);
+		}
+
+		[Test]
+		public void GetiFirst_Returns_Result_For_First_Item_Found_When_Many_Of_Items_Satisfies_Predicate()
+		{
+			// ARRANGE
+			Func<string, bool> startsWithLetterMCaseInsensitive = item =>
+				item != null
+				&& item.StartsWith("M", StringComparison.InvariantCultureIgnoreCase);
+
+			var source = new[] { "fooz", "minimum", "Max" };
+
+			// ACT
+			var result = GetFirst(source, startsWithLetterMCaseInsensitive);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.Found);
+			Assert.AreEqual("minimum", result.Item);
 		}
 	}
 }
