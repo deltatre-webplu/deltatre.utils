@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Deltatre.Utils.Dto;
 
@@ -24,8 +25,22 @@ namespace Deltatre.Utils.Functional
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
+			if (predicate == null)
+				throw new ArgumentNullException(nameof(predicate));
 
-			throw new NotImplementedException();
+			if (projector == null)
+				throw new ArgumentNullException(nameof(projector));
+
+			var firstMatch = source.FirstOrDefault(predicate);
+
+			var notFound = EqualityComparer<TSource>.Default.Equals(firstMatch, default(TSource));
+			if (notFound)
+			{
+				return GetItemResult<TResult>.CreateForItemNotFound();
+			}
+
+			var projection = projector(firstMatch);
+			return GetItemResult<TResult>.CreateForItemFound(projection);
 		}
 	}
 }
