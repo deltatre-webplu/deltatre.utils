@@ -32,7 +32,7 @@ namespace Deltatre.Utils.Tests.Parsers
 			Assert.IsTrue(result.IsValid);
 			
 			// Check parsed value
-			var expected = new DateTimeOffset(new DateTime(2008, 4, 10, 6, 30, 0, DateTimeKind.Local));
+			var expected = new DateTimeOffset(new DateTime(2008, 4, 10, 6, 30, 0), TimeSpan.FromHours(2));
 			Assert.AreEqual(expected, result.ParsedValue);
 		}
 
@@ -53,11 +53,28 @@ namespace Deltatre.Utils.Tests.Parsers
 		{
 			yield return (
 				"2009-06-15T13:45:30.0080000",
-				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8, DateTimeKind.Unspecified)));
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8), TimeSpan.FromHours(2))
+			);
 
 			yield return (
 				"2009-06-15T13:45:30.0080000Z",
-				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8, DateTimeKind.Utc)));
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8), TimeSpan.Zero)
+			);
+
+			yield return (
+				"2009-06-15T13:45:30.0080000-07:00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"2009-06-15T13:45:30.0080000+03:00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"2009-06-15T13:45:30.0080000+00:00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30, 8), TimeSpan.Zero)
+			);
 		}
 	}
 }
