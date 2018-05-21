@@ -10,7 +10,12 @@ namespace Deltatre.Utils.Parsers
 		{
 			//Microsoft standard date and time format strings
 			"s",
-			"o"
+			"o",
+
+			//Extended formats
+			"yyyy-MM-ddTHH:mm:ssz",
+			"yyyy-MM-ddTHH:mm:sszz",
+			"yyyy-MM-ddTHH:mm:sszzz",
 		};
 
 		/// <summary>
