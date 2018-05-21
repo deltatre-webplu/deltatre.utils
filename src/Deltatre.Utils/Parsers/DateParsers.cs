@@ -13,6 +13,7 @@ namespace Deltatre.Utils.Parsers
 			"o",
 
 			//Extended formats
+			"yyyy-MM-ddTHH:mm:ssZ",
 			"yyyy-MM-ddTHH:mm:ssz",
 			"yyyy-MM-ddTHH:mm:sszz",
 			"yyyy-MM-ddTHH:mm:sszzz",

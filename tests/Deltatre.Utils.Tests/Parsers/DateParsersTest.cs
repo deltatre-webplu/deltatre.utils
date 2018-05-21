@@ -141,6 +141,13 @@ namespace Deltatre.Utils.Tests.Parsers
 				"2009-06-15T13:45:30+00:00",
 				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30), TimeSpan.Zero)
 			);
+
+			// UTC
+
+			yield return (
+				"2009-06-15T13:45:30Z",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 30), TimeSpan.Zero)
+			);
 		}
 	}
 }
