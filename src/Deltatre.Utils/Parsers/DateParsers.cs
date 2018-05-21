@@ -23,6 +23,12 @@ namespace Deltatre.Utils.Parsers
 			"yyyyMMddTHHmmsszz",
 			"yyyyMMddTHHmmssz",
 			"yyyyMMddTHHmmssZ",
+
+			//Extended formats with accuracy reduced to minutes
+			"yyyy-MM-ddTHH:mmZ",
+			"yyyy-MM-ddTHH:mmz",
+			"yyyy-MM-ddTHH:mmzz",
+			"yyyy-MM-ddTHH:mmzzz",
 		};
 
 		/// <summary>
