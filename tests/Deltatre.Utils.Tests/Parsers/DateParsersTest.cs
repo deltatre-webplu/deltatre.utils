@@ -137,6 +137,22 @@ namespace Deltatre.Utils.Tests.Parsers
 			Assert.AreEqual(default(DateTimeOffset), result.ParsedValue);
 		}
 
+		[TestCase("2018-05-21")]
+		[TestCase("20180521")]
+		public void ParseIso8601Date_Supports_Formats_With_Date_Only(string toBeParsed)
+		{
+			// ACT
+			var result = ParseIso8601Date(toBeParsed);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.IsValid);
+
+			// check parsed value
+			var expected = new DateTimeOffset(new DateTime(2018, 5, 21), TimeSpan.FromHours(2));
+			Assert.AreEqual(expected, result.ParsedValue);
+		}
+
 		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Microsoft_RoundTrip_Format_Test_Case_Source()
 		{
 			yield return (

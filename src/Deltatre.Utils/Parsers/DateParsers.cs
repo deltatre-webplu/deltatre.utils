@@ -6,8 +6,7 @@ namespace Deltatre.Utils.Parsers
 {
 	public static class DateParsers
 	{
-		private static readonly string[]  Iso8601Formats = new string[]
-		{
+		private static readonly string[]  Iso8601Formats = {
 			//Microsoft standard date and time format strings
 			"s",
 			"o",
@@ -47,6 +46,10 @@ namespace Deltatre.Utils.Parsers
 			"yyyyMMddTHHzz",
 			"yyyyMMddTHHz",
 			"yyyyMMddTHHZ",
+
+			// Formats with hour only
+			"yyyy-MM-dd",
+			"yyyyMMdd"
 		};
 
 		/// <summary>
