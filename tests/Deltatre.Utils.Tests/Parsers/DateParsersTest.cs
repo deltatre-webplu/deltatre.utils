@@ -85,6 +85,42 @@ namespace Deltatre.Utils.Tests.Parsers
 			Assert.AreEqual(tuple.expected, result.ParsedValue);
 		}
 
+		[TestCaseSource(nameof(Basic_Formats_With_Minutes_Accuracy_Test_Case_Source))]
+		public void ParseIso8601Date_Support_Basic_Formats_With_Minutes_Accuracy((string toBeParsed, DateTimeOffset expected) tuple)
+		{
+			// ACT
+			var result = ParseIso8601Date(tuple.toBeParsed);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.IsValid);
+			Assert.AreEqual(tuple.expected, result.ParsedValue);
+		}
+
+		[TestCaseSource(nameof(Extended_Formats_With_Hours_Accuracy_Test_Case_Source))]
+		public void ParseIso8601Date_Support_Extended_Formats_With_Hours_Accuracy((string toBeParsed, DateTimeOffset expected) tuple)
+		{
+			// ACT
+			var result = ParseIso8601Date(tuple.toBeParsed);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.IsValid);
+			Assert.AreEqual(tuple.expected, result.ParsedValue);
+		}
+
+		[TestCaseSource(nameof(Basic_Formats_With_Hours_Accuracy_Test_Case_Source))]
+		public void ParseIso8601Date_Support_Basic_Formats_With_Hours_Accuracy((string toBeParsed, DateTimeOffset expected) tuple)
+		{
+			// ACT
+			var result = ParseIso8601Date(tuple.toBeParsed);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsTrue(result.IsValid);
+			Assert.AreEqual(tuple.expected, result.ParsedValue);
+		}
+
 		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Microsoft_RoundTrip_Format_Test_Case_Source()
 		{
 			yield return (
@@ -293,6 +329,189 @@ namespace Deltatre.Utils.Tests.Parsers
 			yield return (
 				"2009-06-15T13:45Z",
 				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.Zero)
+			);
+		}
+
+		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Basic_Formats_With_Minutes_Accuracy_Test_Case_Source()
+		{
+			// not padded without minutes
+
+			yield return (
+				"20090615T1345-7",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"20090615T1345+3",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"20090615T1345+0",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.Zero)
+			);
+
+			// padded without minutes
+
+			yield return (
+				"20090615T1345-07",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"20090615T1345+03",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"20090615T1345+00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.Zero)
+			);
+
+			// with minutes
+
+			yield return (
+				"20090615T1345-0703",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), new TimeSpan(0, -7, -3, 0))
+			);
+
+			yield return (
+				"20090615T1345+0407",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), new TimeSpan(0, 4, 7, 0))
+			);
+
+			yield return (
+				"20090615T1345+0000",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.Zero)
+			);
+
+			// UTC
+
+			yield return (
+				"20090615T1345Z",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 45, 0), TimeSpan.Zero)
+			);
+		}
+
+		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Extended_Formats_With_Hours_Accuracy_Test_Case_Source()
+		{
+			// not padded without minutes
+
+			yield return (
+				"2009-06-15T13-7",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"2009-06-15T13+3",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"2009-06-15T13+0",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+
+			// padded without minutes
+
+			yield return (
+				"2009-06-15T13-07",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"2009-06-15T13+03",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"2009-06-15T13+00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+
+			// with minutes
+
+			yield return (
+				"2009-06-15T13-07:03",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), new TimeSpan(0, -7, -3, 0))
+			);
+
+			yield return (
+				"2009-06-15T13+04:07",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), new TimeSpan(0, 4, 7, 0))
+			);
+
+			yield return (
+				"2009-06-15T13+00:00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+
+			// UTC
+
+			yield return (
+				"2009-06-15T13Z",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+		}
+
+		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Basic_Formats_With_Hours_Accuracy_Test_Case_Source()
+		{
+			// not padded without minutes
+
+			yield return (
+				"20090615T13-7",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"20090615T13+3",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"20090615T13+0",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+
+			// padded without minutes
+
+			yield return (
+				"20090615T13-07",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(-7))
+			);
+
+			yield return (
+				"20090615T13+03",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.FromHours(3))
+			);
+
+			yield return (
+				"20090615T13+00",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+
+			// with minutes
+
+			yield return (
+				"20090615T13-0703",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), new TimeSpan(0, -7, -3, 0))
+			);
+
+			yield return (
+				"20090615T13+0407",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), new TimeSpan(0, 4, 7, 0))
+			);
+
+			yield return (
+				"20090615T13+0000",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
+			);
+
+			// UTC
+
+			yield return (
+				"20090615T13Z",
+				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
 			);
 		}
 	}
