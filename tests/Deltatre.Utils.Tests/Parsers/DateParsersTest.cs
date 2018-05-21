@@ -121,6 +121,22 @@ namespace Deltatre.Utils.Tests.Parsers
 			Assert.AreEqual(tuple.expected, result.ParsedValue);
 		}
 
+		[TestCase("not a date")]
+		[TestCase("28 November 1988 13:45:60")]
+		[TestCase("Monday 21st May 2018")]
+		[TestCase("2011-January-12")]
+		[TestCase("foo")]
+		public void ParseIso8601Date_Returns_Invalid_Result_When_String_Passed_In_Is_Not_Iso8601_Date(string toBeParsed)
+		{
+			// ACT
+			var result = ParseIso8601Date(toBeParsed);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsFalse(result.IsValid);
+			Assert.AreEqual(default(DateTimeOffset), result.ParsedValue);
+		}
+
 		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Microsoft_RoundTrip_Format_Test_Case_Source()
 		{
 			yield return (

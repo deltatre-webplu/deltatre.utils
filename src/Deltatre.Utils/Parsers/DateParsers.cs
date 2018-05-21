@@ -67,7 +67,9 @@ namespace Deltatre.Utils.Parsers
 				DateTimeStyles.RoundtripKind,
 				out var result);
 
-			return ParsingResult<DateTimeOffset>.CreateValid(result);
+			return isSuccess ? 
+				ParsingResult<DateTimeOffset>.CreateValid(result): 
+				ParsingResult<DateTimeOffset>.CreateInvalid();
 		}
 	}
 }
