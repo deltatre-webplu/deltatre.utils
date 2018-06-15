@@ -4,134 +4,67 @@ using System.Threading.Tasks;
 
 namespace Deltatre.Utils.Timers
 {
-  public sealed class TimerAsync : IDisposable
-  {
-    private readonly Func<CancellationToken, Task> _callback;
-    private readonly object _changeLock = new object();
-    private TimeSpan _dueTime;
-    private TimeSpan _period;
-    private CancellationTokenSource _cancellationSource;
-    private Task _timerTask;
-
-    public event EventHandler<Exception> OnError;
-
-    public TimerAsync(Func<CancellationToken, Task> callback, TimeSpan dueTime, TimeSpan period)
-      : this(callback, dueTime, period, CancellationToken.None)
+    public sealed class TimerAsync
     {
-    }
-
-    public TimerAsync(Func<CancellationToken, Task> callback, TimeSpan dueTime, TimeSpan period, CancellationToken token)
-    {
-      _callback = callback;
-      _dueTime = dueTime;
-      _period = period;
-      _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(token);
-
-      Start();
-    }
-
-    public Task ChangeAsync(TimeSpan dueTime, TimeSpan period)
-    {
-      return ChangeAsync(dueTime, period, CancellationToken.None);
-    }
-    public async Task ChangeAsync(TimeSpan dueTime, TimeSpan period, CancellationToken token)
-    {
-      await StopAsync()
-        .ConfigureAwait(false);
-
-      lock (_changeLock)
+      private readonly Func<CancellationToken, Task> _scheduledAction;
+      private readonly TimeSpan _dueTime;
+      private TimeSpan _period;
+      private CancellationTokenSource _cancellationSource;
+      private Task _scheduledTask;
+      public event EventHandler<Exception> OnError;
+      
+      public TimerAsync(Func<CancellationToken, Task> scheduledAction, TimeSpan dueTime, TimeSpan period)
       {
+        _scheduledAction = scheduledAction ?? throw new ArgumentNullException(nameof(scheduledAction));
+        
+        if(dueTime < TimeSpan.Zero)
+          throw new ArgumentException("due time must be equal or greater than zero", nameof(dueTime));
         _dueTime = dueTime;
+        
+        if(period < TimeSpan.Zero)
+          throw new ArgumentException("period must be equal or greater than zero", nameof(period));
         _period = period;
-        _cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(token);
-
-        Start();
-      }
-    }
-
-    public async Task StopAsync()
-    {
-      _cancellationSource.Cancel();
-
-      try
-      {
-        await _timerTask
-            .ConfigureAwait(false);
-      }
-      catch (OperationCanceledException)
-      {
-        // Cancelled requested, just ignore it...
-      }
-    }
-
-    public void Dispose()
-    {
-      StopAsync()
-        .Wait();
-    }
-
-    private void Start()
-    {
-      if (_dueTime < TimeSpan.Zero)
-      {
-        _timerTask = Task.FromResult(true);
-        return;
       }
 
-      _timerTask = IsRecurring
-        ? StartRecurringAsync(_cancellationSource.Token)
-        : StartOneTimeAsync(_cancellationSource.Token);
-    }
-
-    private Task StartRecurringAsync(CancellationToken cancellationToken)
-    {
-      return Task.Run(async () =>
+      public void Start()
       {
-        await Task.Delay(_dueTime, cancellationToken)
-          .ConfigureAwait(false);
+        _cancellationSource = new CancellationTokenSource();
 
-        while (!cancellationToken.IsCancellationRequested)
+        _scheduledTask = Task.Run(async () =>
         {
-          await RunCallback(cancellationToken)
-            .ConfigureAwait(false);
+          try
+          {
+            await Task.Delay(_dueTime, _cancellationSource.Token);
 
-          await Task.Delay(_period, cancellationToken)
-            .ConfigureAwait(false);
+            while (true)
+            {
+              await _scheduledAction(_cancellationSource.Token);
+              await Task.Delay(_period, _cancellationSource.Token);
+            }            
+          }
+          catch (OperationCanceledException)
+          {
+          }
+          catch (Exception ex)
+          {
+            OnError?.Invoke(this, ex);
+          }
+          
+        }, _cancellationSource.Token);
+      }
+
+      public async Task Stop()
+      {
+        _cancellationSource.Cancel();
+        try
+        {
+          await _scheduledTask;
         }
-      }, cancellationToken);
-    }
+        catch (OperationCanceledException)
+        {
 
-    private Task StartOneTimeAsync(CancellationToken cancellationToken)
-    {
-      return Task.Run(async () =>
-      {
-        await Task.Delay(_dueTime, cancellationToken)
-            .ConfigureAwait(false);
-
-        await RunCallback(cancellationToken)
-          .ConfigureAwait(false);
-
-      }, cancellationToken);
-    }
-
-    private async Task RunCallback(CancellationToken cancellationToken)
-    {
-      try
-      {
-        await _callback(cancellationToken)
-          .ConfigureAwait(false);
-      }
-      catch (OperationCanceledException)
-      {
-        // Cancelled requested, exit
-        throw;
-      }
-      catch (Exception e)
-      {
-        OnError?.Invoke(this, e);
+        }
       }
     }
-
-    private bool IsRecurring => _period.TotalMilliseconds > 0;
-  }
 }
+
