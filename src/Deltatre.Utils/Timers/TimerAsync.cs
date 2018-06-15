@@ -21,11 +21,11 @@ namespace Deltatre.Utils.Timers
         _scheduledAction = scheduledAction ?? throw new ArgumentNullException(nameof(scheduledAction));
         
         if(dueTime < TimeSpan.Zero)
-          throw new ArgumentException("due time must be equal or greater than zero", nameof(dueTime));
+          throw new ArgumentOutOfRangeException(nameof(dueTime), "due time must be equal or greater than zero");
         _dueTime = dueTime;
         
         if(period < TimeSpan.Zero)
-          throw new ArgumentException("period must be equal or greater than zero", nameof(period));
+          throw new ArgumentOutOfRangeException(nameof(period), "period must be equal or greater than zero");
         _period = period;
       }
 
