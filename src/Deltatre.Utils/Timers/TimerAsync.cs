@@ -12,7 +12,7 @@ namespace Deltatre.Utils.Timers
       private CancellationTokenSource _cancellationSource;
       private Task _scheduledTask;
       private bool _isStarted;
-      private readonly SemaphoreSlim _startSemaphore = new SemaphoreSlim(1);
+      private readonly SemaphoreSlim _startSemaphore;
 
       public event EventHandler<Exception> OnError;
       
@@ -27,6 +27,8 @@ namespace Deltatre.Utils.Timers
         if(period < TimeSpan.Zero)
           throw new ArgumentOutOfRangeException(nameof(period), "period must be equal or greater than zero");
         _period = period;
+
+        _startSemaphore = new SemaphoreSlim(1);
       }
 
       public void Start()
