@@ -150,6 +150,38 @@ namespace Deltatre.Utils.Tests.Timers
       Assert.GreaterOrEqual(2, list.Count);
       Assert.IsTrue(list.All(i => i == 1));
     }
+
+    [Test]
+    public void Calling_Start_After_Dispose_Should_Throw()
+    {
+      // ARRANGE
+      var timer = new TimerAsync(ct => Task.FromResult(true), TimeSpan.Zero, TimeSpan.Zero);
+
+      // ACT & ASSERT
+      timer.Dispose();
+      Assert.Throws<ObjectDisposedException>(() => timer.Start());
+    }
+
+    [Test]
+    public async Task Calling_Stop_After_Dispose_Should_Throw()
+    {
+      // ARRANGE
+      var timer = new TimerAsync(ct => Task.FromResult(true), TimeSpan.Zero, TimeSpan.Zero);
+
+      // ACT & ASSERT
+      timer.Dispose();
+      try
+      {
+        await timer.Stop();
+      }
+      catch (ObjectDisposedException ex)
+      {
+      }
+      catch (Exception)
+      {
+        throw;
+      }
+    }
   }
 }
 
