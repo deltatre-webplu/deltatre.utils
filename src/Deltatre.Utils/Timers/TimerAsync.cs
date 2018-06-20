@@ -63,13 +63,13 @@ namespace Deltatre.Utils.Timers
     /// </summary>
     public void Start()
     {
-      if (_disposed)
-        throw new ObjectDisposedException(GetType().FullName);
-
       _semaphore.Wait();
 
       try
       {
+        if (_disposed)
+          throw new ObjectDisposedException(GetType().FullName);
+
         if (IsRunning)
           return;
 
@@ -89,13 +89,13 @@ namespace Deltatre.Utils.Timers
     /// <returns>A task that completes when the timer is stopped.</returns>
     public async Task Stop()
     {
-      if (_disposed)
-        throw new ObjectDisposedException(GetType().FullName);
-
       await _semaphore.WaitAsync().ConfigureAwait(false);
 
       try
       {
+        if (_disposed)
+          throw new ObjectDisposedException(GetType().FullName);
+
         if (!IsRunning)
           return;
 
@@ -159,6 +159,7 @@ namespace Deltatre.Utils.Timers
 
       if (disposing)
       {
+        Stop().Wait();
         _cancellationSource?.Dispose();
         _semaphore?.Dispose();
       }
