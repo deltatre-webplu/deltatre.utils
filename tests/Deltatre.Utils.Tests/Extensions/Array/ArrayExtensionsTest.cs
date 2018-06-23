@@ -58,6 +58,9 @@ namespace Deltatre.Utils.Tests.Extensions.Array
 			Assert.IsNotNull(result);
 			CollectionAssert.AreNotEqual(source, result);
 			CollectionAssert.AreEquivalent(source, result);
+
+			// check that source sequence is not changed
+			CollectionAssert.AreEqual(new[] { "foo", "bar", "buzz" }, source);
 		}
 	}
 }
