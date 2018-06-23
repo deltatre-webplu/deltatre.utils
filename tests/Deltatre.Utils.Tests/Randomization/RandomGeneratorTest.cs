@@ -7,13 +7,13 @@ using Deltatre.Utils.Randomization;
 namespace Deltatre.Utils.Tests.Randomization
 {
 	[TestFixture]
-	public class RandomHelpersTest
+	public class RandomGeneratorTest
 	{
 		[Test]
 		public void Instance_Of_Random_Class_Is_Not_Null()
 		{
 			// ACT
-			var instance = RandomHelpers.Instance;
+			var instance = RandomGenerator.Instance;
 
 			// ASSERT
 			Assert.IsNotNull(instance);
@@ -26,8 +26,8 @@ namespace Deltatre.Utils.Tests.Randomization
 			Random instance1 = null;
 			Random instance2 = null;
 
-			var thread1 = new Thread(() => instance1 = RandomHelpers.Instance);
-			var thread2 = new Thread(() => instance2 = RandomHelpers.Instance);
+			var thread1 = new Thread(() => instance1 = RandomGenerator.Instance);
+			var thread2 = new Thread(() => instance2 = RandomGenerator.Instance);
 
 			// ACT
 			thread1.Start();
@@ -52,7 +52,7 @@ namespace Deltatre.Utils.Tests.Randomization
 			{
 				for (var i = 0; i < sequenceLength; i++)
 				{
-					sequence1[i] = RandomHelpers.Instance.Next((i + 1) * 10);
+					sequence1[i] = RandomGenerator.Instance.Next((i + 1) * 10);
 				}
 			});
 
@@ -60,7 +60,7 @@ namespace Deltatre.Utils.Tests.Randomization
 			{
 				for (var i = 0; i < sequenceLength; i++)
 				{
-					sequence2[i] = RandomHelpers.Instance.Next((i + 1) * 10);
+					sequence2[i] = RandomGenerator.Instance.Next((i + 1) * 10);
 				}
 			});
 

@@ -6,7 +6,7 @@ namespace Deltatre.Utils.Randomization
 	/// <summary>
 	/// Use this class to get a thread local instance of Random class. Instances of different threads will have different seeds.
 	/// </summary>
-	public static class RandomHelpers
+	public static class RandomGenerator
 	{
 		private static int _seed = Environment.TickCount;
 
