@@ -22,12 +22,12 @@ namespace Deltatre.Utils.Extensions.Array
 
 			var result = source.ToArray();
 
-			for (var i = source.Length - 1; i >= 1; i--)
+			for (var i = result.Length - 1; i >= 1; i--)
 			{
 				var j = RandomGenerator.Instance.Next(0, i);
-				var temp = source[j];
-				source[j] = source[i];
-				source[i] = temp;
+				var temp = result[j];
+				result[j] = result[i];
+				result[i] = temp;
 			}
 
 			return result;
