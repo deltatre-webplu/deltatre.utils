@@ -176,6 +176,9 @@ namespace Deltatre.Utils.Timers
       GC.SuppressFinalize(this);
     }
 
+		/// <summary>
+		/// The class finalizer
+		/// </summary>
     ~TimerAsync()
     {
       Dispose(false);

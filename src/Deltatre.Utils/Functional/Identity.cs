@@ -1,5 +1,8 @@
 ﻿namespace Deltatre.Utils.Functional
 {
+	/// <summary>
+	/// A collection of useful functions
+	/// </summary>
 	public static partial class Functions
 	{
 		/// <summary>

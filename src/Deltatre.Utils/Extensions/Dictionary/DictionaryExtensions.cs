@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace Deltatre.Utils.Extensions.Dictionary
 {
+	/// <summary>
+	/// Extension methods for dictionaries
+	/// </summary>
 	public static class DictionaryExtensions
 	{
 		/// <exception cref="ArgumentNullException"> Throws ArgumentNullException when parameter source is null </exception>

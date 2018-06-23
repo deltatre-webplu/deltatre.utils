@@ -4,6 +4,9 @@ using Deltatre.Utils.Randomization;
 
 namespace Deltatre.Utils.Extensions.Array
 {
+	/// <summary>
+	/// Extension methods for arrays
+	/// </summary>
 	public static class ArrayExtensions
 	{
 		/// <summary>

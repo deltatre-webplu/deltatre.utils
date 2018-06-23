@@ -4,6 +4,9 @@ using Deltatre.Utils.Dto;
 
 namespace Deltatre.Utils.Parsers
 {
+	/// <summary>
+	/// A collection of methods to parse dates expressed in different formats
+	/// </summary>
 	public static class DateParsers
 	{
 		private static readonly string[]  Iso8601Formats = {

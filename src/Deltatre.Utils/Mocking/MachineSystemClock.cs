@@ -8,7 +8,14 @@ namespace Deltatre.Utils.Mocking
 	/// </summary>
 	public sealed class MachineSystemClock: ISystemClock
 	{
+		/// <summary>
+		/// The current date and time on this computer expressed as the local time
+		/// </summary>
 		public DateTime Now => DateTime.Now;
+
+		/// <summary>
+		/// The current date and time on this computer expressed as UTC time
+		/// </summary>
 		public DateTime UtcNow => DateTime.UtcNow;
 	}
 }

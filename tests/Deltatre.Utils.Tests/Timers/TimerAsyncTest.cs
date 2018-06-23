@@ -174,7 +174,7 @@ namespace Deltatre.Utils.Tests.Timers
       {
         await timer.Stop();
       }
-      catch (ObjectDisposedException ex)
+      catch (ObjectDisposedException)
       {
       }
       catch (Exception)
