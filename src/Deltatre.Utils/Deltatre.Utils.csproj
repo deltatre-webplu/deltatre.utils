@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
@@ -13,10 +13,6 @@
 	  <RepositoryUrl>https://github.com/deltatre-webplu/deltatre.utils</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
 	  <Version>0.0.1</Version>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard1.1\Deltatre.Utils.xml</DocumentationFile>
-  </PropertyGroup>
-
 </Project>
