@@ -58,6 +58,25 @@ namespace Deltatre.Utils.Extensions.Enumerable
 
 			return new NonEmptySequence<T>(source);
 		}
+
+		/// <summary>
+		/// Creates an hash set from a sequence of items. The default equality comparer for the type argument will be used.
+		/// </summary>
+		/// <typeparam name="T">The type of the items inside the starting sequence</typeparam>
+		/// <param name="source">The starting sequence</param>
+		/// <returns>An hash set containing the unique elements of the starting sequence</returns>
+		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) => 
+			source.ToHashSet(EqualityComparer<T>.Default);
+
+		/// <summary>
+		/// Creates an hash set from a sequence of items.
+		/// </summary>
+		/// <typeparam name="T">The type of the items inside the starting sequence</typeparam>
+		/// <param name="source">The starting sequence</param>
+		/// <param name="comparer">The equality comparer used by the hash set to find the unique elements inside the starting sequence</param>
+		/// <returns>An hash set containing the unique elements of the starting sequence</returns>
+		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => 
+			new HashSet<T>(source, comparer);
 	}
 }
 

@@ -151,6 +151,50 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 			Assert.IsNotNull(result);
 			CollectionAssert.AreEqual(new[] { "foo", "bar" }, result);
 	  }
+
+	  [TestCaseSource(nameof(GetTestCasesForToHashSet))]
+	  public void ToHashSet_Creates_An_HashSet_With_The_Unique_Elements_Of_Starting_SequenceWhen_Equality_Comparer_Is_Not_Specified(
+		  (IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems) tuple)
+	  {
+			// ACT
+		  var result = tuple.startingSequence.ToHashSet();
+
+		  // ASSERT
+			Assert.IsNotNull(result);
+			CollectionAssert.AreEquivalent(tuple.uniqueItems, result);
+	  }
+
+	  [TestCaseSource(nameof(GetTestCasesForToHashSetWithEqualityComparer))]
+	  public void ToHashSet_Creates_An_HashSet_With_The_Unique_Elements_Of_Starting_Sequence_When_Equality_Comparer_Is_Specified(
+		  (IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems) tuple)
+	  {
+		  // ACT
+		  var result = tuple.startingSequence.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
+
+		  // ASSERT
+		  Assert.IsNotNull(result);
+		  CollectionAssert.AreEquivalent(tuple.uniqueItems, result);
+	  }
+
+		private static IEnumerable<(IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems)>
+		  GetTestCasesForToHashSet()
+	  {
+		  yield return (new string[0], new string[0]);
+		  yield return (new[] {"foo"}, new[] {"foo"});
+		  yield return (new[] {"foo", "bar"}, new[] {"foo", "bar"});
+		  yield return (new[] {"foo", "bar", "foo", "bar"}, new[] {"foo", "bar"});
+		  yield return (new[] {"foo", "bar", "FOO", "BAR", "Foo", "Bar", "FoO", "BaR" }, new[] { "foo", "bar", "FOO", "BAR", "Foo", "Bar", "FoO", "BaR" });
+	  }
+
+	  private static IEnumerable<(IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems)>
+		  GetTestCasesForToHashSetWithEqualityComparer()
+	  {
+		  yield return (new string[0], new string[0]);
+		  yield return (new[] { "foo" }, new[] { "foo" });
+		  yield return (new[] { "foo", "bar" }, new[] { "foo", "bar" });
+		  yield return (new[] { "foo", "bar", "foo", "bar" }, new[] { "foo", "bar" });
+		  yield return (new[] { "foo", "bar", "FOO", "BAR", "Foo", "Bar", "FoO", "BaR" }, new[] { "foo", "bar" });
+		}
 	}
 }
 
