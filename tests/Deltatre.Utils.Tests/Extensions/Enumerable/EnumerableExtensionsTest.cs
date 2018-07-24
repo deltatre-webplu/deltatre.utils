@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Deltatre.Utils.Extensions.Enumerable;
 using NUnit.Framework;
 using Linq = System.Linq;
@@ -174,6 +175,134 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  // ASSERT
 		  Assert.IsNotNull(result);
 		  CollectionAssert.AreEquivalent(tuple.uniqueItems, result);
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Throws_When_Source_Is_Null()
+	  {
+			// ACT
+		  Assert.Throws<ArgumentNullException>(() => EnumerableExtensions.SplitInBatches<int>(null, 10));
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Throws_When_BatchSize_Is_Less_Than_Zero()
+	  {
+			// ARRANGE
+		  var target = Linq.Enumerable.Range(1, 100);
+
+		  // ACT
+		  Assert.Throws<ArgumentOutOfRangeException>(() => target.SplitInBatches(-5));
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Throws_When_BatchSize_Equals_Zero()
+	  {
+		  // ARRANGE
+		  var target = Linq.Enumerable.Range(1, 100);
+
+		  // ACT
+		  Assert.Throws<ArgumentOutOfRangeException>(() => target.SplitInBatches(0));
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Returns_Empty_Sequence_When_Source_Is_Empty_Sequence()
+	  {
+		  // ARRANGE
+		  var target = Linq.Enumerable.Empty<int>();
+
+		  // ACT
+		  var result = target.SplitInBatches(10);
+
+			// ASSERT
+			Assert.IsNotNull(result);
+			Assert.IsEmpty(result);
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Returns_One_Batch_When_Source_Contains_Number_Of_Items_Less_Than_BatchSize()
+	  {
+		  // ARRANGE
+		  var target = Linq.Enumerable.Range(1, 10);
+
+		  // ACT
+		  var result = target.SplitInBatches(15);
+
+		  // ASSERT
+		  Assert.IsNotNull(result);
+		  Assert.AreEqual(1, result.Count());
+
+			// check batch content
+		  var batch = result.ElementAt(0);
+			CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 10), batch);
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Returns_One_Batch_When_Source_Contains_Number_Of_Items_Equal_To_BatchSize()
+	  {
+		  // ARRANGE
+		  var target = Linq.Enumerable.Range(1, 10);
+
+		  // ACT
+		  var result = target.SplitInBatches(10);
+
+		  // ASSERT
+		  Assert.IsNotNull(result);
+		  Assert.AreEqual(1, result.Count());
+
+		  // check batch content
+		  var batch = result.ElementAt(0);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 10), batch);
+	  }
+
+	  [Test]
+	  public void SplitInBatches_Works_When_Source_Contains_Number_Of_Items_Multiple_Of_BatchSize()
+	  {
+		  // ARRANGE
+		  var target = Linq.Enumerable.Range(1, 20);
+
+		  // ACT
+		  var result = target.SplitInBatches(5);
+
+		  // ASSERT
+		  Assert.IsNotNull(result);
+		  Assert.AreEqual(4, result.Count());
+
+		  // check batch content
+		  var batch1 = result.ElementAt(0);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 5), batch1);
+
+		  var batch2 = result.ElementAt(1);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(6, 5), batch2);
+
+		  var batch3 = result.ElementAt(2);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(11, 5), batch3);
+
+		  var batch4 = result.ElementAt(3);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(16, 5), batch4);
+		}
+
+	  [Test]
+	  public void SplitInBatches_Works_When_Source_Contains_Number_Of_Items_Not_Multiple_Of_BatchSize()
+	  {
+		  // ARRANGE
+		  var target = Linq.Enumerable.Range(1, 13);
+
+		  // ACT
+		  var result = target.SplitInBatches(5);
+
+		  // ASSERT
+		  Assert.IsNotNull(result);
+		  Assert.AreEqual(3, result.Count());
+
+		  // check batch content
+		  var batch1 = result.ElementAt(0);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 5), batch1);
+
+		  var batch2 = result.ElementAt(1);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(6, 5), batch2);
+
+		  var batch3 = result.ElementAt(2);
+		  CollectionAssert.AreEqual(Linq.Enumerable.Range(11, 3), batch3);
 	  }
 
 		private static IEnumerable<(IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems)>
