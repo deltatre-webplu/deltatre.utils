@@ -91,7 +91,35 @@ namespace Deltatre.Utils.Extensions.Enumerable
 			this IEnumerable<T> source, 
 			int batchSize)
 		{
-			throw new NotImplementedException();
+			if (source == null)
+				throw new ArgumentNullException(nameof(source));
+
+			if(batchSize <= 0)
+				throw new ArgumentOutOfRangeException(
+					nameof(batchSize), 
+					$"Batch size is expected to be a positive integer, but was {batchSize}.");
+
+			return SplitInBatchesImplementation(source, batchSize);
+		}
+
+		private static IEnumerable<IEnumerable<T>> SplitInBatchesImplementation<T>(
+			IEnumerable<T> source,
+			int batchSize)
+		{
+			var batch = new List<T>(batchSize);
+
+			foreach (var item in source)
+			{
+				batch.Add(item);
+				if (batch.Count == batchSize)
+				{
+					yield return batch;
+					batch = new List<T>(batchSize);
+				}
+			}
+
+			if (batch.Count > 0)
+				yield return batch;
 		}
 	}
 }

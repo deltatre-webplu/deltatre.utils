@@ -211,7 +211,7 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  var target = Linq.Enumerable.Empty<int>();
 
 		  // ACT
-		  var result = target.SplitInBatches(10);
+		  var result = target.SplitInBatches(10).ToArray();
 
 			// ASSERT
 			Assert.IsNotNull(result);
@@ -225,14 +225,14 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  var target = Linq.Enumerable.Range(1, 10);
 
 		  // ACT
-		  var result = target.SplitInBatches(15);
+		  var result = target.SplitInBatches(15).ToArray();
 
 		  // ASSERT
 		  Assert.IsNotNull(result);
-		  Assert.AreEqual(1, result.Count());
+		  Assert.AreEqual(1, result.Length);
 
 			// check batch content
-		  var batch = result.ElementAt(0);
+		  var batch = result[0];
 			CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 10), batch);
 	  }
 
@@ -243,14 +243,14 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  var target = Linq.Enumerable.Range(1, 10);
 
 		  // ACT
-		  var result = target.SplitInBatches(10);
+		  var result = target.SplitInBatches(10).ToArray();
 
 		  // ASSERT
 		  Assert.IsNotNull(result);
-		  Assert.AreEqual(1, result.Count());
+		  Assert.AreEqual(1, result.Length);
 
 		  // check batch content
-		  var batch = result.ElementAt(0);
+		  var batch = result[0];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 10), batch);
 	  }
 
@@ -261,23 +261,23 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  var target = Linq.Enumerable.Range(1, 20);
 
 		  // ACT
-		  var result = target.SplitInBatches(5);
+		  var result = target.SplitInBatches(5).ToArray();
 
 		  // ASSERT
 		  Assert.IsNotNull(result);
-		  Assert.AreEqual(4, result.Count());
+		  Assert.AreEqual(4, result.Length);
 
 		  // check batch content
-		  var batch1 = result.ElementAt(0);
+		  var batch1 = result[0];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 5), batch1);
 
-		  var batch2 = result.ElementAt(1);
+		  var batch2 = result[1];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(6, 5), batch2);
 
-		  var batch3 = result.ElementAt(2);
+		  var batch3 = result[2];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(11, 5), batch3);
 
-		  var batch4 = result.ElementAt(3);
+		  var batch4 = result[3];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(16, 5), batch4);
 		}
 
@@ -288,20 +288,20 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  var target = Linq.Enumerable.Range(1, 13);
 
 		  // ACT
-		  var result = target.SplitInBatches(5);
+		  var result = target.SplitInBatches(5).ToArray();
 
 		  // ASSERT
 		  Assert.IsNotNull(result);
-		  Assert.AreEqual(3, result.Count());
+		  Assert.AreEqual(3, result.Length);
 
 		  // check batch content
-		  var batch1 = result.ElementAt(0);
+		  var batch1 = result[0];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(1, 5), batch1);
 
-		  var batch2 = result.ElementAt(1);
+		  var batch2 = result[1];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(6, 5), batch2);
 
-		  var batch3 = result.ElementAt(2);
+		  var batch3 = result[2];
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(11, 3), batch3);
 	  }
 
