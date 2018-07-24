@@ -77,6 +77,22 @@ namespace Deltatre.Utils.Extensions.Enumerable
 		/// <returns>An hash set containing the unique elements of the starting sequence</returns>
 		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) => 
 			new HashSet<T>(source, comparer);
+
+		/// <summary>
+		/// Split a sequence in batches of fixed size
+		/// </summary>
+		/// <typeparam name="T">The type of the items inside the starting sequence</typeparam>
+		/// <param name="source">The starting sequence</param>
+		/// <param name="batchSize">The size of batches to be obtained by splitting the starting sequence</param>
+		/// <returns>A sequence containing the batches obtained by splitting the starting sequence</returns>
+		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter source is null</exception>
+		/// <exception cref="ArgumentOutOfRangeException">Throws ArgumentOutOfRangeException when parameter batchSize is less than or equal to zero</exception>
+		public static IEnumerable<IEnumerable<T>> SplitInBatches<T>(
+			this IEnumerable<T> source, 
+			int batchSize)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
 
