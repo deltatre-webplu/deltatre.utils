@@ -20,7 +20,7 @@ namespace Deltatre.Utils.Dto
 		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter errors is null</exception>
 		/// <returns>An instance representing the result of a failed operation.</returns>
 		/// <remarks>Property Output will be set equal to the default value of type TOutput.</remarks>
-		public static OperationResult<TOutput, TError> CreateSuccess(NonEmptySequence<TError> errors)
+		public static OperationResult<TOutput, TError> CreateFailure(NonEmptySequence<TError> errors)
 		{
 			if (errors == null)
 				throw new ArgumentNullException(nameof(errors));
@@ -33,7 +33,7 @@ namespace Deltatre.Utils.Dto
 		/// </summary>
 		/// <param name="output">The operation output.</param>
 		/// <returns>An instance representing the result of a successful operation.</returns>
-		public static OperationResult<TOutput, TError> CreateValid(TOutput output) =>
+		public static OperationResult<TOutput, TError> CreateSuccess(TOutput output) =>
 			new OperationResult<TOutput, TError>(output, Enumerable.Empty<TError>());
 
 		/// <summary>
