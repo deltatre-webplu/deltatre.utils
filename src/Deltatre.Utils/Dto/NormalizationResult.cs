@@ -1,9 +1,12 @@
-﻿namespace Deltatre.Utils.Dto
+﻿using System;
+
+namespace Deltatre.Utils.Dto
 {
 	/// <summary>
 	/// Represents the result obtained when normalizing a value of type T
 	/// </summary>
 	/// <typeparam name="T">The type of value being normalized</typeparam>
+	[Obsolete("Use OperationResult instead")]
 	public class NormalizationResult<T>
 	{
 		/// <summary>

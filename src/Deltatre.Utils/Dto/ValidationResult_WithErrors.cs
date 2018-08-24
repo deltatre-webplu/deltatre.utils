@@ -11,6 +11,7 @@ namespace Deltatre.Utils.Dto
 	/// </summary>
 	/// <typeparam name="TValue">The type of value being validated</typeparam>
 	/// <typeparam name="TError">The type of validation errors</typeparam>
+	[Obsolete("Use OperationResult instead")]
 	public class ValidationResult<TValue, TError>
 	{
 		/// <summary>

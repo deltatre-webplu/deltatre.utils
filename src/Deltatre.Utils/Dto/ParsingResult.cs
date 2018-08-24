@@ -1,9 +1,12 @@
-﻿namespace Deltatre.Utils.Dto
+﻿using System;
+
+namespace Deltatre.Utils.Dto
 {
 	/// <summary>
 	/// Represents the result obtained when parsing a value of type T
 	/// </summary>
 	/// <typeparam name="T">The type of value being parsed</typeparam>
+	[Obsolete("Use OperationResult instead")]
 	public class ParsingResult<T>
 	{
 		/// <summary>

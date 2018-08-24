@@ -11,6 +11,7 @@ namespace Deltatre.Utils.Dto
 	/// </summary>
 	/// <typeparam name="TValue">The type of value being normalized</typeparam>
 	/// <typeparam name="TError">The type of normalization errors</typeparam>
+	[Obsolete("Use OperationResult instead")]
 	public class NormalizationResult<TValue, TError>
 	{
 		/// <summary>

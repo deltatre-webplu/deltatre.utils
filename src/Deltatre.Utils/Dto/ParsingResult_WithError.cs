@@ -11,6 +11,7 @@ namespace Deltatre.Utils.Dto
 	/// </summary>
 	/// <typeparam name="TValue">The type of value being parsed</typeparam>
 	/// <typeparam name="TError">The type of parsing errors</typeparam>
+	[Obsolete("Use OperationResult instead")]
 	public class ParsingResult<TValue, TError>
 	{
 		/// <summary>
