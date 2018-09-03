@@ -1,10 +1,8 @@
 ﻿using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Deltatre.Utils.Concurrency.Extensions;
+using System.Collections.Concurrent;
 
 namespace Deltatre.Utils.Tests.Concurrency.Extensions
 {
@@ -59,6 +57,28 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			// ACT
 			Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
 				source.ForEachAsync(maxDegreeOfParallelism, operation));
+		}
+
+		[TestCase(2)]
+		[TestCase(3)]
+		[TestCase(4)]
+		public async Task ForEachAsync_Executes_The_Operation_For_Each_Item_Inside_Source_Collection(int maxDegreeOfParallelism)
+		{
+			// ARRANGE
+			var source = new[] { "foo", "bar", "buzz" };
+
+			var processedItems = new ConcurrentBag<string>();
+			Func<string, Task> operation = item => 
+			{
+				processedItems.Add(item);
+				return Task.FromResult(true);
+			};
+
+			// ACT 
+			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
+
+			// ASSERT
+			CollectionAssert.AreEquivalent(new[] { "foo", "bar", "buzz" }, processedItems);
 		}
 	}
 }
