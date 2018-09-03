@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+// TODO move Timers namespace under Concurrency namespace
 namespace Deltatre.Utils.Timers
 {
   /// <summary>
