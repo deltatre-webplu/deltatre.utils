@@ -3,6 +3,7 @@ using System;
 using System.Threading.Tasks;
 using Deltatre.Utils.Concurrency.Extensions;
 using System.Collections.Concurrent;
+using System.Threading;
 
 namespace Deltatre.Utils.Tests.Concurrency.Extensions
 {
@@ -79,6 +80,30 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 
 			// ASSERT
 			CollectionAssert.AreEquivalent(new[] { "foo", "bar", "buzz" }, processedItems);
+		}
+
+		[TestCase(2)]
+		[TestCase(3)]
+		[TestCase(4)]
+		public async Task ForEachAsync_Executes_A_Number_Of_Concurrent_Operations_Less_Than_Or_Equal_To_MaxDegreeOfParallelism(int maxDegreeOfParallelism)
+		{
+			// ARRANGE
+			var source = new[] { "foo", "bar", "buzz" };
+
+			var threadIds = new ConcurrentDictionary<int, byte>();
+
+			Func<string, Task> operation = item =>
+			{
+				var threadId = Thread.CurrentThread.ManagedThreadId;
+				threadIds.TryAdd(threadId, 0);
+				return Task.FromResult(true);
+			};
+
+			// ACT 
+			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
+
+			// ASSERT
+			Assert.IsTrue(threadIds.Count <= maxDegreeOfParallelism);
 		}
 	}
 }
