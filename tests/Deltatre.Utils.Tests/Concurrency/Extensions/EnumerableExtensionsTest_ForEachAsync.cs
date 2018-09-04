@@ -8,7 +8,7 @@ using System.Threading;
 namespace Deltatre.Utils.Tests.Concurrency.Extensions
 {
 	[TestFixture]
-	public class EnumerableExtensionsTest
+	public partial class EnumerableExtensionsTest
 	{
 		[Test]
 		public void ForEachAsync_Throws_ArgumentNullException_When_Source_Is_Null()
