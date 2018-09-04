@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.IO;
 
 namespace Deltatre.Utils.Concurrency.Extensions
 {
@@ -34,12 +33,7 @@ namespace Deltatre.Utils.Concurrency.Extensions
 			if (operation == null)
 				throw new ArgumentNullException(nameof(operation));
 
-			if (maxDegreeOfParallelism <= 0)
-			{
-				throw new ArgumentOutOfRangeException(
-					nameof(maxDegreeOfParallelism),
-					$"Invalid value for the maximum degree of parallelism: {maxDegreeOfParallelism}. The maximum degree of parallelism must be a positive integer.");
-			}
+			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
 			var tasks = from partition in Partitioner.Create(source).GetPartitions(maxDegreeOfParallelism)
 									select Task.Run(async () =>
@@ -78,12 +72,7 @@ namespace Deltatre.Utils.Concurrency.Extensions
 			if (operation == null)
 				throw new ArgumentNullException(nameof(operation));
 
-			if (maxDegreeOfParallelism <= 0)
-			{
-				throw new ArgumentOutOfRangeException(
-					nameof(maxDegreeOfParallelism),
-					$"Invalid value for the maximum degree of parallelism: {maxDegreeOfParallelism}. The maximum degree of parallelism must be a positive integer.");
-			}
+			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
 			var resultsByPositionInSource = new ConcurrentDictionary<long, TResult>();
 
@@ -107,6 +96,16 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			return Enumerable.Range(0, resultsByPositionInSource.Count)
 				.Select(position => resultsByPositionInSource[position]);
+		}
+
+		private static void EnsureValidMaxDegreeOfParallelism(int maxDegreeOfParallelism)
+		{
+			if (maxDegreeOfParallelism <= 0)
+			{
+				throw new ArgumentOutOfRangeException(
+					nameof(maxDegreeOfParallelism),
+					$"Invalid value for the maximum degree of parallelism: {maxDegreeOfParallelism}. The maximum degree of parallelism must be a positive integer.");
+			}
 		}
 	}
 }
