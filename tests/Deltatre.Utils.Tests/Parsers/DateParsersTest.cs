@@ -29,11 +29,11 @@ namespace Deltatre.Utils.Tests.Parsers
 			
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
+			Assert.IsTrue(result.IsSuccess);
 			
 			// Check parsed value
 			var expected = new DateTimeOffset(new DateTime(2008, 4, 10, 6, 30, 0), TimeSpan.FromHours(2));
-			Assert.AreEqual(expected, result.ParsedValue);
+			Assert.AreEqual(expected, result.Output);
 		}
 
 		// see https://docs.microsoft.com/en-us/dotnet/standard/base-types/standard-date-and-time-format-strings#the-round-trip-o-o-format-specifier
@@ -45,8 +45,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCaseSource(nameof(Extended_Formats_Test_Case_Source))]
@@ -57,8 +57,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCaseSource(nameof(Basic_Formats_Test_Case_Source))]
@@ -69,8 +69,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCaseSource(nameof(Extended_Formats_With_Minutes_Accuracy_Test_Case_Source))]
@@ -81,8 +81,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCaseSource(nameof(Basic_Formats_With_Minutes_Accuracy_Test_Case_Source))]
@@ -93,8 +93,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCaseSource(nameof(Extended_Formats_With_Hours_Accuracy_Test_Case_Source))]
@@ -105,8 +105,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCaseSource(nameof(Basic_Formats_With_Hours_Accuracy_Test_Case_Source))]
@@ -117,8 +117,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
-			Assert.AreEqual(tuple.expected, result.ParsedValue);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(tuple.expected, result.Output);
 		}
 
 		[TestCase("not a date")]
@@ -133,8 +133,8 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsFalse(result.IsValid);
-			Assert.AreEqual(default(DateTimeOffset), result.ParsedValue);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(default(DateTimeOffset), result.Output);
 		}
 
 		[TestCase("2018-05-21")]
@@ -146,11 +146,11 @@ namespace Deltatre.Utils.Tests.Parsers
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.IsValid);
+			Assert.IsTrue(result.IsSuccess);
 
 			// check parsed value
 			var expected = new DateTimeOffset(new DateTime(2018, 5, 21), TimeSpan.FromHours(2));
-			Assert.AreEqual(expected, result.ParsedValue);
+			Assert.AreEqual(expected, result.Output);
 		}
 
 		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Microsoft_RoundTrip_Format_Test_Case_Source()

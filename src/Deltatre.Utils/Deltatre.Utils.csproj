@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard1.1</TargetFramework>
+    <TargetFrameworks>net471;netstandard2.0</TargetFrameworks>
 	  <RootNamespace>Deltatre.Utils</RootNamespace>
 	  <Authors>Webplu</Authors>
 	  <Company>Deltatre</Company>
@@ -12,7 +12,6 @@
 	  <PackageProjectUrl>https://github.com/deltatre-webplu/deltatre.utils</PackageProjectUrl>
 	  <RepositoryUrl>https://github.com/deltatre-webplu/deltatre.utils</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
-	  <Version>0.0.1</Version>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 </Project>
