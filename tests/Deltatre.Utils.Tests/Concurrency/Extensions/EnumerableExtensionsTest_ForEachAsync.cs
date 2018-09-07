@@ -90,20 +90,25 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			// ARRANGE
 			var source = new[] { "foo", "bar", "buzz" };
 
-			var threadIds = new ConcurrentDictionary<int, byte>();
+			var timeRanges = new ConcurrentBag<(DateTime start, DateTime end)>();
 
-			Func<string, Task> operation = item =>
+			Func<string, Task> operation = async _ =>
 			{
-				var threadId = Thread.CurrentThread.ManagedThreadId;
-				threadIds.TryAdd(threadId, 0);
-				return Task.FromResult(true);
+				var start = DateTime.Now;
+
+				await Task.Delay(500).ConfigureAwait(false);
+
+				timeRanges.Add((start, DateTime.Now));
 			};
 
 			// ACT 
 			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
 
 			// ASSERT
-			Assert.IsTrue(threadIds.Count <= maxDegreeOfParallelism);
+			for (int i = 0; i < timeRanges.Count; i++)
+			{
+
+			}
 		}
 	}
 }
