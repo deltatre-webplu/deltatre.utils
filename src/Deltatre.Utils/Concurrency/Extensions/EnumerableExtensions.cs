@@ -92,29 +92,38 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			var resultsByPositionInSource = new ConcurrentDictionary<long, TResult>();
 
+			using (var throttler = new SemaphoreSlim(maxDegreeOfParallelism))
+			{
+				var tasks = new List<Task>();
 
+				foreach (var itemWithIndex in source.Select((item, index) => new { item, index }))
+				{
+					await throttler.WaitAsync().ConfigureAwait(false);
 
+#pragma warning disable IDE0039 // Use local function
+					Func<Task> bodyOfNewTask = async () =>
+#pragma warning restore IDE0039 // Use local function
+					{
+						try
+						{
+							var item = itemWithIndex.item;
+							var positionInSource = itemWithIndex.index;
 
+							var result = await operation(item).ConfigureAwait(false);
 
+							resultsByPositionInSource.TryAdd(positionInSource, result);
+						}
+						finally
+						{
+							throttler.Release();
+						}
+					};
 
+					tasks.Add(Task.Run(bodyOfNewTask));
+				}
 
-			var tasks = from partition in Partitioner.Create(source).GetOrderablePartitions(maxDegreeOfParallelism)
-									select Task.Run(async () =>
-									{
-										using (partition)
-										{
-											while (partition.MoveNext())
-											{
-												var positionInSource = partition.Current.Key;
-												var item = partition.Current.Value;
-
-												var result = await operation(item).ConfigureAwait(false);
-
-												resultsByPositionInSource.TryAdd(positionInSource, result);
-											}
-										}
-									});
-			await Task.WhenAll(tasks).ConfigureAwait(false);
+				await Task.WhenAll(tasks).ConfigureAwait(false);
+			}
 
 			return Enumerable.Range(0, resultsByPositionInSource.Count)
 				.Select(position => resultsByPositionInSource[position]);
