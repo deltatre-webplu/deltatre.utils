@@ -36,10 +36,10 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
-			var tasks = new List<Task>();
-
 			using (var throttler = new SemaphoreSlim(maxDegreeOfParallelism))
 			{
+				var tasks = new List<Task>();
+
 				foreach (var item in source)
 				{
 					await throttler.WaitAsync().ConfigureAwait(false);
@@ -60,9 +60,9 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 					tasks.Add(Task.Run(bodyOfNewTask));
 				}
-			}
 
-			await Task.WhenAll(tasks).ConfigureAwait(false);
+				await Task.WhenAll(tasks).ConfigureAwait(false);
+			}
 		}
 
 		/// <summary>
