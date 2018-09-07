@@ -93,20 +93,41 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			// ARRANGE
 			var source = new[] { "foo", "bar", "buzz" };
 
-			var threadIds = new ConcurrentDictionary<int, byte>();
+			var timeRanges = new ConcurrentBag<(DateTime start, DateTime end)>();
 
-			Func<string, Task<string>> operation = item =>
+			Func<string, Task<string>> operation = async item =>
 			{
-				var threadId = Thread.CurrentThread.ManagedThreadId;
-				threadIds.TryAdd(threadId, 0);
-				return Task.FromResult(item);
+				var start = DateTime.Now;
+
+				await Task.Delay(500).ConfigureAwait(false);
+
+				timeRanges.Add((start, DateTime.Now));
+
+				return item;
 			};
 
 			// ACT 
 			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
 
 			// ASSERT
-			Assert.IsTrue(threadIds.Count <= maxDegreeOfParallelism);
+			var timeRangesArray = timeRanges.ToArray();
+
+			for (int i = 0; i < timeRanges.Count; i++)
+			{
+				var current = timeRangesArray[i];
+				var others = GetOthers(timeRangesArray, i);
+				var overlaps = 0;
+
+				foreach (var item in others)
+				{
+					if (AreOverlapping(current, item))
+					{
+						overlaps++;
+					}
+				}
+
+				Assert.IsTrue(overlaps <= maxDegreeOfParallelism);
+			}
 		}
 
 		[TestCase(2)]

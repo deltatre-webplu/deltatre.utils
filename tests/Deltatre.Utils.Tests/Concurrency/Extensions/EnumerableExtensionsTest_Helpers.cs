@@ -15,12 +15,12 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			return first.end > second.start && second.end > first.start;
 		}
 
-		private static T[] GetOthers<T>(T[] items, int index)
+		private static IEnumerable<T> GetOthers<T>(IEnumerable<T> items, int index)
 		{
 			var numberOfElementsBefore = index;
 			var itemsToSkip = index + 1;
 
-			return items.Take(numberOfElementsBefore).Concat(items.Skip(itemsToSkip)).ToArray();
+			return items.Take(numberOfElementsBefore).Concat(items.Skip(itemsToSkip));
 		}
 	}
 }

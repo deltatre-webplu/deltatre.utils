@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Deltatre.Utils.Concurrency.Extensions;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Linq;
 
 namespace Deltatre.Utils.Tests.Concurrency.Extensions
 {
@@ -105,9 +106,23 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
 
 			// ASSERT
+			var timeRangesArray = timeRanges.ToArray();
+
 			for (int i = 0; i < timeRanges.Count; i++)
 			{
+				var current = timeRangesArray[i];
+				var others = GetOthers(timeRangesArray, i);
+				var overlaps = 0;
 
+				foreach (var item in others)
+				{
+					if (AreOverlapping(current, item))
+					{
+						overlaps++;
+					}
+				}
+
+				Assert.IsTrue(overlaps <= maxDegreeOfParallelism);
 			}
 		}
 	}
