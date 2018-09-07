@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading;
 
 namespace Deltatre.Utils.Concurrency.Extensions
 {
@@ -22,7 +23,7 @@ namespace Deltatre.Utils.Concurrency.Extensions
 		/// <exception cref="ArgumentNullException"><paramref name="source"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="operation"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="maxDegreeOfParallelism"/> is less than or equal to zero.</exception>
-		public static Task ForEachAsync<T>(
+		public static async Task ForEachAsync<T>(
 			this IEnumerable<T> source,
 			int maxDegreeOfParallelism,
 			Func<T, Task> operation)
@@ -35,18 +36,31 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
-			var tasks = from partition in Partitioner.Create(source).GetPartitions(maxDegreeOfParallelism)
-									select Task.Run(async () =>
-									{
-										using (partition)
-										{
-											while (partition.MoveNext())
-											{
-												await operation(partition.Current).ConfigureAwait(false);
-											}
-										}
-									});
-			return Task.WhenAll(tasks);
+			var throttler = new SemaphoreSlim(maxDegreeOfParallelism);
+			var tasks = new List<Task>();
+
+			foreach (var item in source)
+			{
+				await throttler.WaitAsync().ConfigureAwait(false);
+
+#pragma warning disable IDE0039 // Use local function
+				Func<Task> bodyOfNewTask = async () =>
+#pragma warning restore IDE0039 // Use local function
+				{
+					try
+					{
+						await operation(item).ConfigureAwait(false);
+					}
+					finally
+					{
+						throttler.Release();
+					}
+				};
+
+				tasks.Add(Task.Run(bodyOfNewTask));
+			}
+
+			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
 
 		/// <summary>
