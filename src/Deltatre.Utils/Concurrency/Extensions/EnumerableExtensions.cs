@@ -36,28 +36,30 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
-			var throttler = new SemaphoreSlim(maxDegreeOfParallelism);
 			var tasks = new List<Task>();
 
-			foreach (var item in source)
+			using (var throttler = new SemaphoreSlim(maxDegreeOfParallelism))
 			{
-				await throttler.WaitAsync().ConfigureAwait(false);
+				foreach (var item in source)
+				{
+					await throttler.WaitAsync().ConfigureAwait(false);
 
 #pragma warning disable IDE0039 // Use local function
-				Func<Task> bodyOfNewTask = async () =>
+					Func<Task> bodyOfNewTask = async () =>
 #pragma warning restore IDE0039 // Use local function
-				{
-					try
 					{
-						await operation(item).ConfigureAwait(false);
-					}
-					finally
-					{
-						throttler.Release();
-					}
-				};
+						try
+						{
+							await operation(item).ConfigureAwait(false);
+						}
+						finally
+						{
+							throttler.Release();
+						}
+					};
 
-				tasks.Add(Task.Run(bodyOfNewTask));
+					tasks.Add(Task.Run(bodyOfNewTask));
+				}
 			}
 
 			await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -89,6 +91,12 @@ namespace Deltatre.Utils.Concurrency.Extensions
 			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
 			var resultsByPositionInSource = new ConcurrentDictionary<long, TResult>();
+
+
+
+
+
+
 
 			var tasks = from partition in Partitioner.Create(source).GetOrderablePartitions(maxDegreeOfParallelism)
 									select Task.Run(async () =>
