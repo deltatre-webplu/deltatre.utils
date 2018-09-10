@@ -5,3 +5,9 @@ branches:
   increment: Minor
   prevent-increment-of-merged-branch-version: false
   track-merge-target: true
+ hotfix(es)?[/-]:
+  mode: ContinuousDeployment
+  tag: fix
+  increment: None
+  prevent-increment-of-merged-branch-version: false
+  track-merge-target: true 
