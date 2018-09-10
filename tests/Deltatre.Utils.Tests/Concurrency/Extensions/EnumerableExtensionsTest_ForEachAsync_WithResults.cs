@@ -51,7 +51,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 		}
 
 		[Test]
-		public void ForEachAsync_WithResults_WithResults_Throws_ArgumentOutOfRangeException_When_MaxDegreeOfParallelism_Is_Equals_Zero()
+		public void ForEachAsync_WithResults_WithResults_Throws_ArgumentOutOfRangeException_When_MaxDegreeOfParallelism_Equals_Zero()
 		{
 			// ARRANGE
 			const int maxDegreeOfParallelism = 0;
@@ -63,10 +63,22 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 				source.ForEachAsync(operation, maxDegreeOfParallelism));
 		}
 
+		[Test]
+		public void ForEachAsync_WithResults_Does_Not_Throws_When_MaxDegreeOfParallelism_Is_Null()
+		{
+			// ARRANGE
+			var source = new[] { "hello", "world" };
+			Func<string, Task<string>> operation = item => Task.FromResult(item);
+
+			// ACT
+			Assert.DoesNotThrowAsync(() => source.ForEachAsync(operation, null));
+		}
+
 		[TestCase(2)]
 		[TestCase(3)]
 		[TestCase(4)]
-		public async Task ForEachAsync_WithResults_Executes_The_Operation_For_Each_Item_Inside_Source_Collection(int maxDegreeOfParallelism)
+		[TestCase(null)]
+		public async Task ForEachAsync_WithResults_Executes_The_Operation_For_Each_Item_Inside_Source_Collection(int? maxDegreeOfParallelism)
 		{
 			// ARRANGE
 			var source = new[] { "foo", "bar", "buzz" };
@@ -133,7 +145,8 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 		[TestCase(2)]
 		[TestCase(3)]
 		[TestCase(4)]
-		public async Task ForEachAsync_WithResults_Produces_Result_For_Each_Item_Inside_Source_Collection(int maxDegreeOfParallelism)
+		[TestCase(null)]
+		public async Task ForEachAsync_WithResults_Produces_Result_For_Each_Item_Inside_Source_Collection(int? maxDegreeOfParallelism)
 		{
 			// ARRANGE
 			var source = new[] { "foo", "bar", "buzz" };
@@ -150,7 +163,8 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 		[TestCase(2)]
 		[TestCase(3)]
 		[TestCase(4)]
-		public async Task ForEachAsync_WithResults_Produces_Results_In_Source_Order(int maxDegreeOfParallelism)
+		[TestCase(null)]
+		public async Task ForEachAsync_WithResults_Produces_Results_In_Source_Order(int? maxDegreeOfParallelism)
 		{
 			// ARRANGE
 			var source = new[] { "foo", "bar", "buzz" };
