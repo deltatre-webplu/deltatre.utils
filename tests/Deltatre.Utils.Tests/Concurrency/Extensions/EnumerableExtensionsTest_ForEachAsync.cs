@@ -61,10 +61,22 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 				source.ForEachAsync(operation, maxDegreeOfParallelism));
 		}
 
+		[Test]
+		public void ForEachAsync_Does_Not_Throws_When_MaxDegreeOfParallelism_Is_Null()
+		{
+			// ARRANGE
+			var source = new[] { "hello", "world" };
+			Func<string, Task> operation = _ => Task.FromResult(true);
+
+			// ACT
+			Assert.DoesNotThrowAsync(() => source.ForEachAsync(operation, null));
+		}
+
 		[TestCase(2)]
 		[TestCase(3)]
 		[TestCase(4)]
-		public async Task ForEachAsync_Executes_The_Operation_For_Each_Item_Inside_Source_Collection(int maxDegreeOfParallelism)
+		[TestCase(null)]
+		public async Task ForEachAsync_Executes_The_Operation_For_Each_Item_Inside_Source_Collection(int? maxDegreeOfParallelism)
 		{
 			// ARRANGE
 			var source = new[] { "foo", "bar", "buzz" };
