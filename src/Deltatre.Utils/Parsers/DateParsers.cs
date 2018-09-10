@@ -61,7 +61,7 @@ namespace Deltatre.Utils.Parsers
 		/// <param name="toBeParsed">The ISO 8601 string to be parsed</param>
 		/// <returns>An object of type ParsingResult which represents the result of the performed parsing operation</returns>
 		/// <exception cref="ArgumentException">Throws ArgumentException if a null or white space string is passed in</exception>
-		public static ParsingResult<DateTimeOffset> ParseIso8601Date(string toBeParsed)
+		public static OperationResult<DateTimeOffset> ParseIso8601Date(string toBeParsed)
 		{
 			if(string.IsNullOrWhiteSpace(toBeParsed))
 				throw new ArgumentException($"Parameter '{toBeParsed}' cannot be null or white space.");
@@ -74,8 +74,8 @@ namespace Deltatre.Utils.Parsers
 				out var result);
 
 			return isSuccess ? 
-				ParsingResult<DateTimeOffset>.CreateValid(result): 
-				ParsingResult<DateTimeOffset>.CreateInvalid();
+				OperationResult<DateTimeOffset>.CreateSuccess(result):
+				OperationResult<DateTimeOffset>.CreateFailure();
 		}
 	}
 }

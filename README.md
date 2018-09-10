@@ -19,3 +19,6 @@ Following extension methods are available for IEnumerable:
 - ForEach<TITem>: invokes an instance of Action<TITem> for each item inside an instance of IEnumerable<TITem>
 - HasDuplicates<TITem>: checks whether an instance of IEnumerable<TITem> contains duplicates. Optionally you can provide a comparer (an instance of IEqualityComparer<TITem>)
 - ToNonEmptySequence<TITem>: converts an instance of IEnumerable<TITem> to an instance of NonEmptySequence<TITem>
+
+
+
