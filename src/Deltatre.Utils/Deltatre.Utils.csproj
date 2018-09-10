@@ -6,7 +6,7 @@
 	  <Authors>Webplu</Authors>
 	  <Company>Deltatre</Company>
 	  <Description>Utils library</Description>
-	  <PackageTags>C# .NET</PackageTags>
+	  <PackageTags>C# .NET</PackageTags> 
 	  <IncludeSymbols>True</IncludeSymbols>
 	  <IncludeSource>True</IncludeSource>
 	  <PackageProjectUrl>https://github.com/deltatre-webplu/deltatre.utils</PackageProjectUrl>
