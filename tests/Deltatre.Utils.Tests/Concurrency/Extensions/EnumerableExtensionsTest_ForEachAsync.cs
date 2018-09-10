@@ -20,7 +20,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 
 			// ACT
 			Assert.ThrowsAsync<ArgumentNullException>(() => 
-				EnumerableExtensions.ForEachAsync(null, maxDegreeOfParallelism, operation));
+				EnumerableExtensions.ForEachAsync(null, operation, maxDegreeOfParallelism));
 		}
 
 		[Test]
@@ -32,7 +32,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 
 			// ACT
 			Assert.ThrowsAsync<ArgumentNullException>(() =>
-				source.ForEachAsync(maxDegreeOfParallelism, null));
+				source.ForEachAsync(null, maxDegreeOfParallelism));
 		}
 
 		[Test]
@@ -45,7 +45,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 
 			// ACT
 			Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
-				source.ForEachAsync(maxDegreeOfParallelism, operation));
+				source.ForEachAsync(operation, maxDegreeOfParallelism));
 		}
 
 		[Test]
@@ -58,7 +58,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 
 			// ACT
 			Assert.ThrowsAsync<ArgumentOutOfRangeException>(() =>
-				source.ForEachAsync(maxDegreeOfParallelism, operation));
+				source.ForEachAsync(operation, maxDegreeOfParallelism));
 		}
 
 		[TestCase(2)]
@@ -77,7 +77,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			};
 
 			// ACT 
-			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
+			await source.ForEachAsync(operation, maxDegreeOfParallelism).ConfigureAwait(false);
 
 			// ASSERT
 			CollectionAssert.AreEquivalent(new[] { "foo", "bar", "buzz" }, processedItems);
@@ -103,7 +103,7 @@ namespace Deltatre.Utils.Tests.Concurrency.Extensions
 			};
 
 			// ACT 
-			await source.ForEachAsync(maxDegreeOfParallelism, operation).ConfigureAwait(false);
+			await source.ForEachAsync(operation, maxDegreeOfParallelism).ConfigureAwait(false);
 
 			// ASSERT
 			var timeRangesArray = timeRanges.ToArray();

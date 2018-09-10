@@ -17,16 +17,16 @@ namespace Deltatre.Utils.Concurrency.Extensions
 		/// </summary>
 		/// <typeparam name="T">The type of the items inside <paramref name="source"/></typeparam>
 		/// <param name="source">The source sequence</param>
-		/// <param name="maxDegreeOfParallelism">The maximum number of operations that are able to run in parallel</param>
 		/// <param name="operation">The asynchronous operation to be executed for each item inside <paramref name="source"/></param>
+		/// <param name="maxDegreeOfParallelism">The maximum number of operations that are able to run in parallel. If null, no limits will be set for the maximum number of parallel operations (same behaviour as Task.WhenAll)</param>
 		/// <returns>A task which completes when all of the asynchronous operations (one for each item inside <paramref name="source"/>) complete</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="source"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="operation"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="maxDegreeOfParallelism"/> is less than or equal to zero.</exception>
-		public static async Task ForEachAsync<T>(
+		public static Task ForEachAsync<T>(
 			this IEnumerable<T> source,
-			int maxDegreeOfParallelism,
-			Func<T, Task> operation)
+			Func<T, Task> operation,
+			int? maxDegreeOfParallelism = null)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -36,11 +36,29 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
+			return (maxDegreeOfParallelism == null)
+				? ApplyOperationToAllItems(source, operation)
+				: ApplyOperationToAllItemsWithConstrainedParallelism(source, operation, maxDegreeOfParallelism.Value);
+		}
+
+		private static Task ApplyOperationToAllItems<T>(
+			IEnumerable<T> items,
+			Func<T, Task> operation)
+		{
+			var tasks = items.Select(operation);
+			return Task.WhenAll(tasks);
+		}
+
+		private static async Task ApplyOperationToAllItemsWithConstrainedParallelism<T>(
+			IEnumerable<T> items,
+			Func<T, Task> operation, 
+			int maxDegreeOfParallelism)
+		{
 			using (var throttler = new SemaphoreSlim(maxDegreeOfParallelism))
 			{
 				var tasks = new List<Task>();
 
-				foreach (var item in source)
+				foreach (var item in items)
 				{
 					await throttler.WaitAsync().ConfigureAwait(false);
 
@@ -71,16 +89,16 @@ namespace Deltatre.Utils.Concurrency.Extensions
 		/// <typeparam name="TSource">The type of the items inside the source sequence</typeparam>
 		/// <typeparam name="TResult">The type of the object produced by invoking <paramref name="operation"/> on any item of <paramref name="source"/></typeparam>
 		/// <param name="source">The source sequence</param>
-		/// <param name="maxDegreeOfParallelism">The maximum number of operations that are able to run in parallel</param>
 		/// <param name="operation">The asynchronous operation to be executed for each item inside <paramref name="source"/>. This operation will produce a result of type <typeparamref name="TResult"/></param>
+		/// <param name="maxDegreeOfParallelism">The maximum number of operations that are able to run in parallel. If null, no limits will be set for the maximum number of parallel operations (same behaviour as Task.WhenAll)</param>
 		/// <returns>A task which completes when all of the asynchronous operations (one for each item inside <paramref name="source"/>) complete. This task will produce a sequence of objects of type <typeparamref name="TResult"/> which are the results (in source sequence order) of applying <paramref name="operation"/> to all items in <paramref name="source"/></returns> 
 		/// <exception cref="ArgumentNullException"><paramref name="source"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentNullException"><paramref name="operation"/> is <c>null</c>.</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="maxDegreeOfParallelism"/> is less than or equal to zero.</exception>
-		public static async Task<IEnumerable<TResult>> ForEachAsync<TSource, TResult>(
+		public static Task<TResult[]> ForEachAsync<TSource, TResult>(
 			this IEnumerable<TSource> source,
-			int maxDegreeOfParallelism,
-			Func<TSource, Task<TResult>> operation)
+			Func<TSource, Task<TResult>> operation,
+			int? maxDegreeOfParallelism = null)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -90,13 +108,31 @@ namespace Deltatre.Utils.Concurrency.Extensions
 
 			EnsureValidMaxDegreeOfParallelism(maxDegreeOfParallelism);
 
+			return (maxDegreeOfParallelism == null)
+				? ApplyOperationToAllItems(source, operation)
+				: ApplyOperationToAllItemsWithConstrainedParallelism(source, operation, maxDegreeOfParallelism.Value);
+		}
+
+		private static Task<TResult[]> ApplyOperationToAllItems<TItem, TResult>(
+			IEnumerable<TItem> items,
+			Func<TItem, Task<TResult>> operation)
+		{
+			var tasks = items.Select(operation);
+			return Task.WhenAll(tasks);
+		}
+
+		private static async Task<TResult[]> ApplyOperationToAllItemsWithConstrainedParallelism<TItem, TResult>(
+			IEnumerable<TItem> items,
+			Func<TItem, Task<TResult>> operation,
+			int maxDegreeOfParallelism)
+		{
 			var resultsByPositionInSource = new ConcurrentDictionary<long, TResult>();
 
 			using (var throttler = new SemaphoreSlim(maxDegreeOfParallelism))
 			{
 				var tasks = new List<Task>();
 
-				foreach (var itemWithIndex in source.Select((item, index) => new { item, index }))
+				foreach (var itemWithIndex in items.Select((item, index) => new { item, index }))
 				{
 					await throttler.WaitAsync().ConfigureAwait(false);
 
@@ -125,11 +161,13 @@ namespace Deltatre.Utils.Concurrency.Extensions
 				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
-			return Enumerable.Range(0, resultsByPositionInSource.Count)
-				.Select(position => resultsByPositionInSource[position]);
+			return Enumerable
+				.Range(0, resultsByPositionInSource.Count)
+				.Select(position => resultsByPositionInSource[position])
+				.ToArray();
 		}
 
-		private static void EnsureValidMaxDegreeOfParallelism(int maxDegreeOfParallelism)
+		private static void EnsureValidMaxDegreeOfParallelism(int? maxDegreeOfParallelism)
 		{
 			if (maxDegreeOfParallelism <= 0)
 			{
