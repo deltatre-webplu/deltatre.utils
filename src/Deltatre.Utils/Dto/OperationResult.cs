@@ -45,5 +45,14 @@ namespace Deltatre.Utils.Dto
 		/// This is the result produced from the operation. In case of failed operation it will be set to the default value of type TOutput.
 		/// </summary>
 		public TOutput Output { get; }
+
+    /// <summary>
+    /// Implicit type conversion from <typeparamref name="TOutput"/> to <see cref="OperationResult{TOutput}" />
+    /// </summary>
+    /// <param name="value">An instance of type<typeparamref name="TOutput"/> to be converted to <see cref="OperationResult{TOutput}"/></param>
+    public static implicit operator OperationResult<TOutput>(TOutput value)
+    {
+      return CreateSuccess(value);
+    }
 	}
 }
