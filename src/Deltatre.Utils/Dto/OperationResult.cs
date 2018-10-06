@@ -9,7 +9,7 @@ namespace Deltatre.Utils.Dto
 	public sealed class OperationResult<TOutput>
 	{
     /// <summary>
-    /// The result of a failed operation
+    /// The result of a failed operation. Property <see cref="Output"/> will be set equal to the default value of type TOutput.
     /// </summary>
     public static readonly OperationResult<TOutput> Failure = new OperationResult<TOutput>(false, default(TOutput));
 
