@@ -11,6 +11,8 @@ namespace Deltatre.Utils.Randomization
   /// </summary>
   public static class RandomHelpers
   {
+    private static readonly string AlphanumericChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
     /// <summary>
     /// Call this method to get a random alphanumeric string 
     /// </summary>
@@ -19,7 +21,24 @@ namespace Deltatre.Utils.Randomization
     /// <exception cref="ArgumentOutOfRangeException">Throws <see cref="ArgumentOutOfRangeException"/> when parameter <paramref name="length"/> is less than zero</exception>
     public static string GetRandomAlphanumericString(int length)
     {
-      throw new NotImplementedException();
+      if (length < 0)
+        throw new ArgumentOutOfRangeException(
+          nameof(length), 
+          $"Parameter {nameof(length)} cannot be less than zero.");
+
+      if (length == 0)
+        return string.Empty;
+
+      var characters = new char[length];
+
+      for (int i = 0; i < length; i++)
+      {
+        var randomIndex = RandomGenerator.Instance.Next(AlphanumericChars.Length);
+        var randomChar = AlphanumericChars[randomIndex];
+        characters[i] = randomChar;
+      }
+
+      return new string(characters);
     }
   }
 }
