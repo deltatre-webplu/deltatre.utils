@@ -1,10 +1,13 @@
-﻿namespace Deltatre.Utils.Dto
+﻿using System;
+
+namespace Deltatre.Utils.Dto
 {
-	/// <summary>
-	/// This class represents the result for the operation of fetching an item from a source
-	/// </summary>
-	/// <typeparam name="T">The type of item being fetched</typeparam>
-	public class GetItemResult<T>
+  /// <summary>
+  /// This class represents the result for the operation of fetching an item from a source
+  /// </summary>
+  /// <typeparam name="T">The type of item being fetched</typeparam>
+  [Obsolete("Use OperationResult instead.")]
+  public sealed class GetItemResult<T>
 	{
 		/// <summary>
 		/// Use this method to create an instance representing a successful get operation (a get operation in which the item was found).
