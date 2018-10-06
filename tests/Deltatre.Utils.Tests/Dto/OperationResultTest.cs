@@ -29,5 +29,29 @@ namespace Deltatre.Utils.Tests.Dto
 			Assert.IsTrue(result.IsSuccess);
 			Assert.AreEqual("hello world", result.Output);
 		}
+
+    [Test]
+    public void Failure_Is_An_Instance_Representing_The_Result_Of_A_Failed_Operation()
+    {
+      // ACT
+      var result = OperationResult<string>.Failure;
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      Assert.IsFalse(result.IsSuccess);
+      Assert.AreEqual(default(string), result.Output);
+    }
+
+    [Test]
+    public void Implicit_Conversion_From_TOutput_To_OperationResultOfTOutput_Is_Available()
+    {
+      // ACT
+      OperationResult<string> result = "Hello !";
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      Assert.IsTrue(result.IsSuccess);
+      Assert.AreEqual("Hello !", result.Output);
+    }
 	}
 }

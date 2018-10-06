@@ -45,5 +45,19 @@ namespace Deltatre.Utils.Tests.Dto
 			Assert.IsNotNull(result.Errors);
 			Assert.IsEmpty(result.Errors);
 		}
-	}
+
+    [Test]
+    public void Implicit_Conversion_From_TOutput_To_OperationResultOfTOutputTError_Is_Available()
+    {
+      // ACT
+      OperationResult<string, string> result = "Hello !";
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      Assert.IsTrue(result.IsSuccess);
+      Assert.AreEqual("Hello !", result.Output);
+      Assert.IsNotNull(result.Errors);
+      Assert.IsEmpty(result.Errors);
+    }
+  }
 }
