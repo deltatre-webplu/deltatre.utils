@@ -36,10 +36,16 @@ namespace Deltatre.Utils.Dto
 		public static OperationResult<TOutput, TError> CreateSuccess(TOutput output) =>
 			new OperationResult<TOutput, TError>(output, Enumerable.Empty<TError>());
 
-		/// <summary>
-		/// Indicates whether the operation completed successfully. 
-		/// </summary>
-		public bool IsSuccess => Errors.Count == 0;
+    private OperationResult(TOutput output, IEnumerable<TError> errors)
+    {
+      Output = output;
+      Errors = new ReadOnlyCollection<TError>(errors.ToList());
+    }
+
+    /// <summary>
+    /// Indicates whether the operation completed successfully. 
+    /// </summary>
+    public bool IsSuccess => Errors.Count == 0;
 
 		/// <summary>
 		/// This is the result produced from the operation. In case of failed operation it will be set to the default value of type TOutput.
@@ -51,10 +57,13 @@ namespace Deltatre.Utils.Dto
 		/// </summary>
 		public ReadOnlyCollection<TError> Errors { get; }
 
-		private OperationResult(TOutput output, IEnumerable<TError> errors)
-		{
-			Output = output;
-			Errors = new ReadOnlyCollection<TError>(errors.ToList());
-		}
-	}
+    /// <summary>
+    /// Implicit type conversion from <typeparamref name="TOutput"/> to <see cref="OperationResult{TOutput, TError}" />
+    /// </summary>
+    /// <param name="value">An instance of type<typeparamref name="TOutput"/> to be converted to <see cref="OperationResult{TOutput, TError}"/></param>
+    public static implicit operator OperationResult<TOutput, TError>(TOutput value)
+    {
+      return CreateSuccess(value);
+    }
+  }
 }
