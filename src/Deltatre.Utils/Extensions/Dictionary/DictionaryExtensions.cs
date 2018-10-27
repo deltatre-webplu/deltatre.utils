@@ -23,6 +23,14 @@ namespace Deltatre.Utils.Extensions.Dictionary
       return new ReadOnlyDictionary<TKey, TValue>(source);
     }
 
+    /// <summary>
+    /// Returns the relative string value of the dictionary's <paramref name="key"/> or
+    /// <c>null</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
+    /// </summary>
+    /// <param name="source">A dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <returns>The relative string value of the dictionary's <paramref name="key"/> or
+    /// <c>null</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist</returns>
     public static string GetStringOrDefault(this IDictionary<string, object> source, string key)
     {
       return GetValueOrDefault<string>(source, key);
@@ -39,7 +47,7 @@ namespace Deltatre.Utils.Extensions.Dictionary
     }
 
     /// <summary>
-    /// <para><c>Returns</c> the relative value of the dictionary <paramref name="key"/> or
+    /// <para><c>Returns</c> the relative value of the dictionary's <paramref name="key"/> or
     /// its default value for the type <c>if</c> the dictionary is null or the key does not exist</para>
     /// <para></para>
     /// </summary>
