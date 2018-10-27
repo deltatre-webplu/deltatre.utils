@@ -57,16 +57,15 @@ namespace Deltatre.Utils.Extensions.Dictionary
     }
 
     /// <summary>
-    /// <para><c>Returns</c> the relative value of <paramref name="source"/>'s <paramref name="key"/> or
-    /// its default value for the type <c>if</c> <paramref name="source"/> is <c>null</c> or the key does not exist</para>
-    /// <para></para>
+    /// <c>Returns</c> the relative value of <paramref name="key"/> or
+    /// its default value for the type <typeparamref name="T"/> <c>if</c> <paramref name="source"/> is <c>null</c> or the key does not exist inside <paramref name="source"/>.
     /// </summary>
     /// <typeparam name="T">The desired type of the returning value</typeparam>
     /// <param name="source">A Dictionary object</param>
     /// <param name="key">A key of the dictionary</param>
     /// <returns>
-    /// <para>The relative value of the dictionary key or</para>
-    /// <para>its default value if <paramref name="source"/> is <c>null</c> or the key does not exist</para>
+    /// <para>The relative value of <paramref name="key"/> or</para>
+    /// <para>its default value if <paramref name="source"/> is <c>null</c> or the key does not exist inside <paramref name="source"/></para>
     /// </returns>
     public static T GetValueOrDefault<T>(this IDictionary<string, object> source, string key)
     {
