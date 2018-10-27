@@ -77,9 +77,13 @@ namespace Deltatre.Utils.Extensions.Dictionary
     /// </returns>
     public static T GetValueOrDefault<T>(this IDictionary<string, object> source, string key)
     {
+      if (source == null)
+      {
+        throw new ArgumentNullException("The source dictionary is null");
+      }
       try
       {
-        if (source != null && (source.ContainsKey(key)))
+        if (source.ContainsKey(key))
         {
           return (T)Convert.ChangeType(source[key], typeof(T));
         }
