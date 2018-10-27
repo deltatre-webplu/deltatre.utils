@@ -30,7 +30,7 @@ namespace Deltatre.Utils.Extensions.Dictionary
     /// <param name="source">A dictionary object</param>
     /// <param name="key">A key of the dictionary</param>
     /// <returns>The relative <c>string</c> value of <paramref name="key"/> or
-    /// <c>null</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist</returns>
+    /// <c>null</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.</returns>
     public static string GetStringOrDefault(this IDictionary<string, object> source, string key)
     {
       return GetValueOrDefault<string>(source, key);
