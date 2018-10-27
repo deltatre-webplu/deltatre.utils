@@ -40,9 +40,12 @@ namespace Deltatre.Utils.Extensions.Dictionary
     /// Returns the relative <c>bool</c> value of <paramref name="source"/>'s <paramref name="key"/> or
     /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
     /// </summary>
-    /// <param name="source"></param>
-    /// <param name="key"></param>
-    /// <returns></returns>
+    /// <param name="source">A dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <returns>
+    /// The relative <c>bool</c> value of <paramref name="source"/>'s <paramref name="key"/> or
+    /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
+    /// </returns>
     public static bool GetBoolOrDefault(this IDictionary<string, object> source, string key)
     {
       return GetValueOrDefault<bool>(source, key);
