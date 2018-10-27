@@ -33,13 +33,25 @@ namespace Deltatre.Utils.Extensions.Dictionary
       return GetValueOrDefault<int>(fields, propertyName);
     }
 
-    public static T GetValueOrDefault<T>(this IDictionary<string, object> fields, string propertyName)
+    /// <summary>
+    /// <para><c>Returns</c> the relative value of the dictionary <paramref name="key"/> or
+    /// its default value for the type <c>if</c> the dictionary is null or the key does not exist</para>
+    /// <para></para>
+    /// </summary>
+    /// <typeparam name="T">The desired type of the returning value</typeparam>
+    /// <param name="source">A Dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <returns>
+    /// <para>The relative value of the dictionary key or</para>
+    /// <para>its default value if <paramref name="source"/> is <c>null</c> or the key does not exist</para>
+    /// </returns>
+    public static T GetValueOrDefault<T>(this IDictionary<string, object> source, string key)
     {
       try
       {
-        if (fields != null && (fields.ContainsKey(propertyName)))
+        if (source != null && (source.ContainsKey(key)))
         {
-          return (T)Convert.ChangeType(fields[propertyName], typeof(T));
+          return (T)Convert.ChangeType(source[key], typeof(T));
         }
         return default(T);
       }
