@@ -38,6 +38,12 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     }
 
     [Test]
+    public void GetValueOrDefault_Should_Throw_When_Source_Is_Null()
+    {
+      Assert.Throws<ArgumentNullException>(() => DictionaryExtensions.GetValueOrDefault<object>(null, "key"));
+    }
+
+    [Test]
     public void GetValueOrDefault_Should_Return_Specified_String_Type()
     {
       var source = new Dictionary<string, object>
@@ -78,7 +84,6 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
 
       Assert.AreEqual(resultType, typeof(bool));
     }
-
 
     [Test]
     public void GetValueOrDefault_Should_Return_Default_Type_If_Not_Able_To_Cast_Type()
@@ -229,4 +234,3 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     }
   }
 }
-
