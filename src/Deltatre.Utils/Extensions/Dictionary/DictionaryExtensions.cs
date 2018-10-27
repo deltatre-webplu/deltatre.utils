@@ -36,14 +36,20 @@ namespace Deltatre.Utils.Extensions.Dictionary
       return GetValueOrDefault<string>(source, key);
     }
 
-    public static bool GetBoolOrDefault(this IDictionary<string, object> fields, string propertyName)
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="source"></param>
+    /// <param name="key"></param>
+    /// <returns></returns>
+    public static bool GetBoolOrDefault(this IDictionary<string, object> source, string key)
     {
-      return GetValueOrDefault<bool>(fields, propertyName);
+      return GetValueOrDefault<bool>(source, key);
     }
 
-    public static int GetIntOrDefault(this IDictionary<string, object> fields, string propertyName)
+    public static int GetIntOrDefault(this IDictionary<string, object> source, string key)
     {
-      return GetValueOrDefault<int>(fields, propertyName);
+      return GetValueOrDefault<int>(source, key);
     }
 
     /// <summary>
