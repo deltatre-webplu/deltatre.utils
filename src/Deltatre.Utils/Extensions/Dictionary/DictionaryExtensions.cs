@@ -37,13 +37,13 @@ namespace Deltatre.Utils.Extensions.Dictionary
     }
 
     /// <summary>
-    /// Returns the relative <c>bool</c> value of <paramref name="source"/>'s <paramref name="key"/> or
-    /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
+    /// Returns the relative <c>bool</c> value of <paramref name="key"/> or
+    /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.
     /// </summary>
     /// <param name="source">A dictionary object</param>
     /// <param name="key">A key of the dictionary</param>
     /// <returns>
-    /// The relative <c>bool</c> value of <paramref name="source"/>'s <paramref name="key"/> or
+    /// The relative <c>bool</c> value of <paramref name="key"/> or
     /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
     /// </returns>
     public static bool GetBoolOrDefault(this IDictionary<string, object> source, string key)
@@ -51,6 +51,14 @@ namespace Deltatre.Utils.Extensions.Dictionary
       return GetValueOrDefault<bool>(source, key);
     }
 
+    /// <summary>
+    /// Returns the relative <c>int</c> value of <paramref name="key"/> or
+    /// 0 if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.
+    /// </summary>
+    /// <param name="source">A dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <returns>The relative <c>int</c> value of <paramref name="key"/> or
+    /// 0 if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.</returns>
     public static int GetIntOrDefault(this IDictionary<string, object> source, string key)
     {
       return GetValueOrDefault<int>(source, key);
@@ -65,7 +73,7 @@ namespace Deltatre.Utils.Extensions.Dictionary
     /// <param name="key">A key of the dictionary</param>
     /// <returns>
     /// <para>The relative value of <paramref name="key"/> or</para>
-    /// <para>its default value if <paramref name="source"/> is <c>null</c> or the key does not exist inside <paramref name="source"/></para>
+    /// <para>its default value if <paramref name="source"/> is <c>null</c> or the key does not exist inside <paramref name="source"/>.</para>
     /// </returns>
     public static T GetValueOrDefault<T>(this IDictionary<string, object> source, string key)
     {
