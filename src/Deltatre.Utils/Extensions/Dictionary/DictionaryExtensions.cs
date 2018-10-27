@@ -23,9 +23,9 @@ namespace Deltatre.Utils.Extensions.Dictionary
       return new ReadOnlyDictionary<TKey, TValue>(source);
     }
 
-    public static string GetStringOrDefault(this IDictionary<string, object> fields, string propertyName)
+    public static string GetStringOrDefault(this IDictionary<string, object> source, string key)
     {
-      return GetValueOrDefault<string>(fields, propertyName);
+      return GetValueOrDefault<string>(source, key);
     }
 
     public static bool GetBoolOrDefault(this IDictionary<string, object> fields, string propertyName)
