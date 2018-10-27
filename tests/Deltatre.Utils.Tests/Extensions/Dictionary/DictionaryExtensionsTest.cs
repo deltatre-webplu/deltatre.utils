@@ -18,7 +18,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     [Test]
     public void AsReadOnly_Wraps_Source_In_ReadOnlyDictionary()
     {
-      // ARRABGE
+      // ARRANGE
       var source = new Dictionary<string, int>
       {
         ["Foo"] = 10,
@@ -40,6 +40,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     [Test]
     public void GetValueOrDefault_Should_Throw_When_Source_Is_Null()
     {
+      // ACT
       Assert.Throws<ArgumentNullException>(() => DictionaryExtensions.GetValueOrDefault<object>(null, "key"));
     }
 
