@@ -9,6 +9,11 @@ namespace Deltatre.Utils.Extensions.Dictionary
   /// </summary>
   public static class DictionaryExtensions
   {
+    ///<summary>Returns a read-only version of the <paramref name="source"/> dictionary</summary>
+    ///<param name="source">A dictionary object</param>
+    ///<returns cref="System.Collections.ObjectModel.ReadOnlyDictionary{TKey, TValue}">
+    ///A read-only version of <paramref name="source"/>
+    ///</returns>
     /// <exception cref="ArgumentNullException"> Throws ArgumentNullException when parameter source is null </exception>
     public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(this IDictionary<TKey, TValue> source)
     {
