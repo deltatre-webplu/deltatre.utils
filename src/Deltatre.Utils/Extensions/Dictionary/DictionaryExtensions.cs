@@ -24,7 +24,7 @@ namespace Deltatre.Utils.Extensions.Dictionary
     }
 
     /// <summary>
-    /// Returns the relative string value of the dictionary's <paramref name="key"/> or
+    /// Returns the relative <c>string</c> value of <paramref name="source"/>'s <paramref name="key"/> or
     /// <c>null</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
     /// </summary>
     /// <param name="source">A dictionary object</param>
@@ -37,7 +37,8 @@ namespace Deltatre.Utils.Extensions.Dictionary
     }
 
     /// <summary>
-    ///
+    /// Returns the relative <c>bool</c> value of <paramref name="source"/>'s <paramref name="key"/> or
+    /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist
     /// </summary>
     /// <param name="source"></param>
     /// <param name="key"></param>
@@ -53,8 +54,8 @@ namespace Deltatre.Utils.Extensions.Dictionary
     }
 
     /// <summary>
-    /// <para><c>Returns</c> the relative value of the dictionary's <paramref name="key"/> or
-    /// its default value for the type <c>if</c> the dictionary is null or the key does not exist</para>
+    /// <para><c>Returns</c> the relative value of <paramref name="source"/>'s <paramref name="key"/> or
+    /// its default value for the type <c>if</c> <paramref name="source"/> is <c>null</c> or the key does not exist</para>
     /// <para></para>
     /// </summary>
     /// <typeparam name="T">The desired type of the returning value</typeparam>
