@@ -18,7 +18,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     [Test]
     public void AsReadOnly_Wraps_Source_In_ReadOnlyDictionary()
     {
-      // ARRABGE
+      // ARRANGE
       var source = new Dictionary<string, int>
       {
         ["Foo"] = 10,
@@ -35,6 +35,13 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
       Assert.IsTrue(result.ContainsKey("Bar"));
       Assert.AreEqual(10, result["Foo"]);
       Assert.AreEqual(45, result["Bar"]);
+    }
+
+    [Test]
+    public void GetValueOrDefault_Should_Throw_When_Source_Is_Null()
+    {
+      // ACT
+      Assert.Throws<ArgumentNullException>(() => DictionaryExtensions.GetValueOrDefault<object>(null, "key"));
     }
 
     [Test]
@@ -78,7 +85,6 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
 
       Assert.AreEqual(resultType, typeof(bool));
     }
-
 
     [Test]
     public void GetValueOrDefault_Should_Return_Default_Type_If_Not_Able_To_Cast_Type()
@@ -229,4 +235,3 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     }
   }
 }
-
