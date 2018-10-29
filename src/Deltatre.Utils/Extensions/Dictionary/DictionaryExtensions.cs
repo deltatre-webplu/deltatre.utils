@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace Deltatre.Utils.Extensions.Dictionary
 {
@@ -37,6 +38,23 @@ namespace Deltatre.Utils.Extensions.Dictionary
       return GetValueOrDefault<string>(source, key);
     }
 
+
+    /// <summary>
+    /// Returns the relative <c>string</c> value of <paramref name="key"/> or
+    /// <c>null</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.
+    /// </summary>
+    /// <param name="source">A dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <param name="provider">Format provider to customize the culture specific aspects of the type conversion</param>
+    /// <returns>The relative <c>string</c> value of <paramref name="key"/> or
+    /// <c>null</c> if <paramref name="key"/> does not exist inside <paramref name="source"/>.</returns>
+    /// <exception cref="ArgumentNullException"> Throws ArgumentNullException when parameter source is null </exception>
+    public static string GetStringOrDefault(this IDictionary<string, object> source, string key, IFormatProvider provider)
+    {
+      return GetValueOrDefault<string>(source, key, provider);
+    }
+
+
     /// <summary>
     /// Returns the relative <c>bool</c> value of <paramref name="key"/> or
     /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.
@@ -52,6 +70,25 @@ namespace Deltatre.Utils.Extensions.Dictionary
     {
       return GetValueOrDefault<bool>(source, key);
     }
+
+
+    /// <summary>
+    /// Returns the relative <c>bool</c> value of <paramref name="key"/> or
+    /// <c>false</c> if <paramref name="source"/> is <c>null</c> or <paramref name="key"/> does not exist inside <paramref name="source"/>.
+    /// </summary>
+    /// <param name="source">A dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <param name="provider">Format provider to customize the culture specific aspects of the type conversion</param>
+    /// <returns>
+    /// The relative <c>bool</c> value of <paramref name="key"/> or
+    /// <c>false</c> if <paramref name="key"/> does not exist
+    /// </returns>
+    /// <exception cref="ArgumentNullException"> Throws ArgumentNullException when parameter source is null </exception>
+    public static bool GetBoolOrDefault(this IDictionary<string, object> source, string key, IFormatProvider provider)
+    {
+      return GetValueOrDefault<bool>(source, key, provider);
+    }
+
 
     /// <summary>
     /// Returns the relative <c>int</c> value of <paramref name="key"/> or
@@ -98,5 +135,39 @@ namespace Deltatre.Utils.Extensions.Dictionary
         return default(T);
       }
     }
+
+    /// <summary>
+    /// <c>Returns</c> the relative value of <paramref name="key"/> or
+    /// its default value for the type <typeparamref name="T"/> <c>if</c> <paramref name="source"/> is <c>null</c> or the key does not exist inside <paramref name="source"/>.
+    /// </summary>
+    /// <typeparam name="T">The desired type of the returning value</typeparam>
+    /// <param name="source">A Dictionary object</param>
+    /// <param name="key">A key of the dictionary</param>
+    /// <param name="provider"></param>
+    /// <returns>
+    /// <para>The relative value of <paramref name="key"/> or</para>
+    /// <para>its default value if the key does not exist inside <paramref name="source"/>.</para>
+    /// </returns>
+    /// <exception cref="ArgumentNullException"> Throws ArgumentNullException when parameter source is null </exception>
+    public static T GetValueOrDefault<T>(this IDictionary<string, object> source, string key, IFormatProvider provider)
+    {
+      if (source == null)
+      {
+        throw new ArgumentNullException("The source dictionary is null");
+      }
+      try
+      {
+        if (source.ContainsKey(key))
+        {
+          return (T)Convert.ChangeType(source[key], typeof(T), provider);
+        }
+        return default(T);
+      }
+      catch
+      {
+        return default(T);
+      }
+    }
+
   }
 }
