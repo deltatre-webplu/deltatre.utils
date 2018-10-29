@@ -257,7 +257,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["boolKey"] = true
       };
 
-      var result = source.GetValueOrDefault<bool>("boolKey");
+      var result = source.GetBoolOrDefault("boolKey");
 
       Assert.AreEqual(result, true);
     }
@@ -270,7 +270,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["boolKey"] = true
       };
 
-      var result = source.GetValueOrDefault<bool>("boolKeyNotFound");
+      var result = source.GetBoolOrDefault("boolKeyNotFound");
 
       Assert.AreEqual(result, false);
     }
@@ -284,7 +284,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["intKey"] = 10
       };
 
-      var result = source.GetValueOrDefault<int>("intKey");
+      var result = source.GetIntOrDefault("intKey");
 
       Assert.AreEqual(result, 10);
     }
@@ -297,7 +297,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["intKey"] = 15
       };
 
-      var result = source.GetValueOrDefault<int>("intKeyNotFound");
+      var result = source.GetIntOrDefault("intKeyNotFound");
 
       Assert.AreEqual(result, 0);
     }
