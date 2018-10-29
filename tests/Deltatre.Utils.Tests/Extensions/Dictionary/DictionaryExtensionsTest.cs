@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Deltatre.Utils.Extensions.Dictionary;
 using NUnit.Framework;
 
@@ -157,6 +158,56 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
     }
 
     [Test]
+    public void GetValueOrDefault_Should_Return_DateTime_Culture_Info_Based()
+    {
+      var source = new Dictionary<string, object>
+      {
+        ["dateKey"] = "8/18/2010"
+      };
+
+      var culture = new CultureInfo("en-US");
+      var result = source.GetValueOrDefault<DateTime>("dateKey",culture);
+      var expectedDate = new DateTime(2010, 8, 18);
+
+      Assert.AreEqual(result.Date, expectedDate.Date);
+    }
+
+    [Test]
+    public void GetValueOrDefault_Should_Return_Default_DateTime_If_No_CultureInfo_Conversion_Is_Possible()
+    {
+      var source = new Dictionary<string, object>
+      {
+        ["dateKey"] = "8/18/2010"
+      };
+
+      var culture = new CultureInfo("it-IT");
+      var result = source.GetValueOrDefault<DateTime>("dateKey", culture);
+      var notExpectedDate = new DateTime(2010, 8, 18);
+      var expectedDate = new DateTime(0001, 1, 1).Date;
+
+      Assert.AreNotEqual(result.Date, notExpectedDate.Date);
+      Assert.AreEqual(result.Date, expectedDate);
+    }
+
+
+    [Test]
+    public void GetValueOrDefault_Should_FallBack_On_Default_Value_If_Provider_Is_Null()
+    {
+      var source = new Dictionary<string, object>
+      {
+        ["dateKey"] = "16/7/2018"
+      };
+
+      CultureInfo culture = null;
+      var result = source.GetValueOrDefault<DateTime>("dateKey", culture);
+      var notExpectedDate = new DateTime(2018, 7, 16);
+      var expectedDate = new DateTime(0001, 1, 1).Date;
+
+      Assert.AreNotEqual(result.Date, notExpectedDate.Date);
+      Assert.AreEqual(result.Date, expectedDate);
+    }
+
+    [Test]
     public void GetStringOrDefault_Should_Return_The_Expected_String_Value()
     {
       var source = new Dictionary<string, object>
@@ -164,7 +215,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["stringKey"] = "valueString"
       };
 
-      var result = source.GetValueOrDefault<string>("stringKey");
+      var result = source.GetStringOrDefault("stringKey");
 
       Assert.AreEqual(result, "valueString");
     }
@@ -177,9 +228,25 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["stringKey"] = "valueString"
       };
 
-      var result = source.GetValueOrDefault<string>("stringKeyNotFound");
+      var result = source.GetStringOrDefault("stringKeyNotFound");
 
       Assert.AreEqual(result, null);
+    }
+
+    [Test]
+    public void GetStringOrDefault_Should_Return_String_CultureInfo_Based()
+    {
+
+      var source = new Dictionary<string, object>
+      {
+        ["doubleKey"] = 16325.62901
+      };
+
+      
+      var culture = CultureInfo.CreateSpecificCulture("de-DE");
+      var result = source.GetStringOrDefault("doubleKey", culture);
+
+      Assert.AreEqual("16325,62901",result);
     }
 
     [Test]
@@ -207,6 +274,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
 
       Assert.AreEqual(result, false);
     }
+
 
     [Test]
     public void GetIntOrDefault_Should_Return_The_Expected_Int_Value()
