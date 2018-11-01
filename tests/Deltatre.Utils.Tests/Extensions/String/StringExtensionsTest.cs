@@ -49,5 +49,21 @@ namespace Deltatre.Utils.Tests.Extensions.String
             Assert.IsFalse(Regex.IsMatch(actualString, "<(.|\n)*?>"));
             Assert.AreEqual(expectedString, actualString);
         }
+
+        [Test]
+        public void StripTags_Should_Return_Given_String_Without_Html_Tags_Leaving_Escaped_Html()
+        {
+            string input = "<p>When you want to include <b>literal html</b> inside a web page you should escape it (e.g.: &lt;h1&gt; Title here &lt;/h1&gt;)</p>";
+
+            // ARRANGE
+            string expectedString = "When you want to include literal html inside a web page you should escape it (e.g.: &lt;h1&gt; Title here &lt;/h1&gt;)";
+
+            // ACT
+            string actualString = StringExtensions.StripTags(input);
+
+            // ASSERT
+            Assert.IsFalse(Regex.IsMatch(actualString, "<(.|\n)*?>"));
+            Assert.AreEqual(expectedString, actualString);
+        }
     }
 }
