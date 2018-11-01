@@ -19,7 +19,7 @@ namespace Deltatre.Utils.Extensions.String
             {
                 return string.Empty;
             }
-            return Regex.Replace(source, "<.*?>|&.*?;", string.Empty);
+            return Regex.Replace(source, "<.*?>", string.Empty);
         }
     }
 }
