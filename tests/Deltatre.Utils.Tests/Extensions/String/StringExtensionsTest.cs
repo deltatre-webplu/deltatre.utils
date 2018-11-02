@@ -110,7 +110,7 @@ namespace Deltatre.Utils.Tests.Extensions.String
     public void Truncate_Returns_Truncate_String_With_Ellipsis_String_At_The_End()
     {
       // ARRANGE
-      const string source = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+      const string source = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
 
       // ACT
       var result = source.Truncate(50);
@@ -125,7 +125,7 @@ namespace Deltatre.Utils.Tests.Extensions.String
     public void Truncate_Returns_Truncate_String_With_No_Ellipsis_String_At_The_End_If_Null_Or_Whitespace()
     {
       // ARRANGE
-      const string source = "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.";
+      const string source = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
 
       // ACT
       var result = source.Truncate(50, "");
