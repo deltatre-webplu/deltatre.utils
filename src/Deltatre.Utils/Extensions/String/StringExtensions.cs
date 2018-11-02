@@ -27,9 +27,10 @@ namespace Deltatre.Utils.Extensions.String
     }
 
     /// <summary>
-    /// Truncat method, tests the length of the source string to see if it needs any processing. 
+    /// This method is meant to return a string with a specific length.
+    /// It tests the length of the source string to see if it needs any processing. 
     /// If the source is longer than the max length, we call Substring to get the first N characters. 
-    /// This copies the string.
+    /// The method copies the string.
     /// </summary>
     /// <param name="source">The string to be sanitized from HTML tags</param>
     /// <param name="length">The max length of the source</param>
