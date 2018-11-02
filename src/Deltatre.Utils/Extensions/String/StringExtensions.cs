@@ -40,14 +40,14 @@ namespace Deltatre.Utils.Extensions.String
       if (string.IsNullOrWhiteSpace(source))
         return source;
 
-      if (source.Length > length)
-      {
-        source = source.Substring(0, length);
-      }
-      if (string.IsNullOrWhiteSpace(ellipsis))
-      {
+      if (source.Length <= length)
         return source;
-      }
+
+      source = source.Substring(0, length);
+
+      if (string.IsNullOrWhiteSpace(ellipsis))
+        return source;
+
       return string.Concat(source, ellipsis);
     }
   }
