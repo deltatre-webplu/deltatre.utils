@@ -189,22 +189,15 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
       Assert.AreEqual(result.Date, expectedDate);
     }
 
-
     [Test]
-    public void GetValueOrDefault_Should_FallBack_On_Default_Value_If_Provider_Is_Null()
+    public void GetValueOrDefault_Throws_If_Provider_Is_Null()
     {
       var source = new Dictionary<string, object>
       {
         ["dateKey"] = "16/7/2018"
       };
 
-      CultureInfo culture = null;
-      var result = source.GetValueOrDefault<DateTime>("dateKey", culture);
-      var notExpectedDate = new DateTime(2018, 7, 16);
-      var expectedDate = new DateTime(0001, 1, 1).Date;
-
-      Assert.AreNotEqual(result.Date, notExpectedDate.Date);
-      Assert.AreEqual(result.Date, expectedDate);
+      Assert.Throws<ArgumentNullException>(() => source.GetValueOrDefault<DateTime>("dateKey", null));
     }
 
     [Test]
