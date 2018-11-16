@@ -1,6 +1,6 @@
 # Deltatre Utils
 
-This is a general purpose library of helpers useful for C# .NET projects.
+This is a general purpose library containing helpers useful for C# .NET projects.  
 The main tools you can find here are:
  - extension methods for .NET BCL types
  - data transfer objects useful for common programming tasks
