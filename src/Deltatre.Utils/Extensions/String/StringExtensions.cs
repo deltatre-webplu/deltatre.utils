@@ -31,12 +31,14 @@ namespace Deltatre.Utils.Extensions.String
     /// Call this method if you want to process a string and be sure that its length doesn't exceed a maximum allowed length.
     /// If the lenght of the source string is less than or equal to the maximum allowed length then the source string is returned. 
     /// If the lenght of the source string is greater than the maximum allowedf length, then a substring of the source string is returned. 
-    /// You can specify an optional suffix to be appended at the end of the returned string if the returned string is a substring of the source string. 
+    /// You can specify an optional suffix to be appended at the end of the returned string if the returned string is a substring of the source string.
+    /// If the source string is truncated and a suffix is appended at the end then the length of the returned string will be the maximum allowed length plus the lenght of the suffix
     /// </summary>
     /// <param name="source">The source string to be processed</param>
     /// <param name="maximumAllowedLength">The maximum allowed length of the source string. This value must be non negative.</param>
     /// <param name="ellipsis">The suffix to be appended at the end of the returned string if the source string is truncated because its length exceeds the maximum allowed length. If you pass a string null or white space then no suffix will be appended at the end of the returned string</param>
-    /// <returns></returns>
+    /// <returns>A <see cref="string"/> which is the source string or a substring of the source string possibly enriched with the specified suffix</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Throws <see cref="ArgumentOutOfRangeException"/> when parameter <paramref name="maximumAllowedLength"/> is less than zero</exception>
     public static string Truncate(
       this string source,
       int maximumAllowedLength = 150,
