@@ -43,11 +43,13 @@ namespace Deltatre.Utils.Extensions.String
       string ellipsis = "...")
     {
       if (maximumAllowedLength < 0)
+      {
         throw new ArgumentOutOfRangeException(
-          nameof(maximumAllowedLength),
-          $"Parameter '{nameof(maximumAllowedLength)}' must be non negative integer");
+         nameof(maximumAllowedLength),
+         $"Parameter '{nameof(maximumAllowedLength)}' must be non negative integer");
+      }
 
-      if (string.IsNullOrWhiteSpace(source))
+      if (string.IsNullOrEmpty(source))
         return source;
 
       if (source.Length <= maximumAllowedLength)
