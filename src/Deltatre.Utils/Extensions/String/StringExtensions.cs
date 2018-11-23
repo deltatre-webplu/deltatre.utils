@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace Deltatre.Utils.Extensions.String
 {
@@ -27,29 +28,37 @@ namespace Deltatre.Utils.Extensions.String
     }
 
     /// <summary>
-    /// This method is meant to return a string with a specific length.
-    /// It tests the length of the source string to see if it needs any processing. 
-    /// If the source is longer than the max length, we call Substring to get the first N characters. 
-    /// The method copies the string.
+    /// Call this method if you want to process a string and be sure that its length doesn't exceed a maximum allowed length.
+    /// If the lenght of the source string is less than or equal to the maximum allowed length then the source string is returned. 
+    /// If the lenght of the source string is greater than the maximum allowedf length, then a substring of the source string is returned. 
+    /// You can specify an optional suffix to be appended at the end of the returned string if the returned string is a substring of the source string. 
     /// </summary>
-    /// <param name="source">The string to be sanitized from HTML tags</param>
-    /// <param name="length">The max length of the source</param>
-    /// <param name="ellipsis">Value to add at the end of the returned string</param>
+    /// <param name="source">The source string to be processed</param>
+    /// <param name="maximumAllowedLength">The maximum allowed length of the source string. This value must be non negative.</param>
+    /// <param name="ellipsis">The suffix to be appended at the end of the returned string if the source string is truncated because its length exceeds the maximum allowed length. If you pass a string null or white space then no suffix will be appended at the end of the returned string</param>
     /// <returns></returns>
-    public static string Truncate(this string source, int length = 150, string ellipsis = "...")
+    public static string Truncate(
+      this string source,
+      int maximumAllowedLength = 150,
+      string ellipsis = "...")
     {
+      if (maximumAllowedLength < 0)
+        throw new ArgumentOutOfRangeException(
+          nameof(maximumAllowedLength),
+          $"Parameter '{nameof(maximumAllowedLength)}' must be non negative integer");
+
       if (string.IsNullOrWhiteSpace(source))
         return source;
 
-      if (source.Length <= length)
+      if (source.Length <= maximumAllowedLength)
         return source;
 
-      source = source.Substring(0, length);
+      var truncated = source.Substring(0, maximumAllowedLength);
 
       if (string.IsNullOrWhiteSpace(ellipsis))
-        return source;
+        return truncated;
 
-      return string.Concat(source, ellipsis);
+      return string.Concat(truncated, ellipsis);
     }
   }
 }
