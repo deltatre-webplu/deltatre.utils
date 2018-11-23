@@ -68,5 +68,72 @@ namespace Deltatre.Utils.Tests.Extensions.String
       const string expectedString = "When you want to include literal html inside a web page you should encode it (e.g.: &lt;h1&gt; Title here &lt;/h1&gt;)";
       Assert.AreEqual(expectedString, result);
     }
+
+    [Test]
+    public void Truncate_Returns_Null_For_Null_Source()
+    {
+      // ACT
+      var result = StringExtensions.Truncate(null);
+
+      // ASSERT
+      Assert.IsNull(result);
+    }
+
+
+    [Test]
+    public void Truncate_Returns_Empty_String_For_Empty_String_Source()
+    {
+      // ACT
+      var result = string.Empty.Truncate();
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      Assert.IsEmpty(result);
+    }
+
+    [Test]
+    public void Truncate_Returns_Original_String_If_Minor_Or_Equal_To_Lenght_Params()
+    {
+      // ARRANGE
+      const string source = "Lorem ipsum dolor sit amet, consectetur cras amet.";
+
+      // ACT
+      var result = source.Truncate(100);
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      const string expectedString = "Lorem ipsum dolor sit amet, consectetur cras amet.";
+      Assert.AreEqual(expectedString, result);
+    }
+
+    [Test]
+    public void Truncate_Returns_Truncate_String_With_Ellipsis_String_At_The_End()
+    {
+      // ARRANGE
+      const string source = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
+
+      // ACT
+      var result = source.Truncate(50);
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      const string expectedString = "Lorem Ipsum is simply dummy text of the printing a...";
+      Assert.AreEqual(expectedString, result);
+    }
+
+    [Test]
+    public void Truncate_Returns_Truncate_String_With_No_Ellipsis_String_At_The_End_If_Null_Or_Whitespace()
+    {
+      // ARRANGE
+      const string source = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.";
+
+      // ACT
+      var result = source.Truncate(50, "");
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      const string expectedString = "Lorem Ipsum is simply dummy text of the printing a";
+      Assert.AreEqual(expectedString, result);
+    }
   }
 }

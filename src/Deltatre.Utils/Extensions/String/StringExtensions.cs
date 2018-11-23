@@ -25,5 +25,31 @@ namespace Deltatre.Utils.Extensions.String
 
       return HtmlTagRegex.Replace(source, string.Empty);
     }
+
+    /// <summary>
+    /// This method is meant to return a string with a specific length.
+    /// It tests the length of the source string to see if it needs any processing. 
+    /// If the source is longer than the max length, we call Substring to get the first N characters. 
+    /// The method copies the string.
+    /// </summary>
+    /// <param name="source">The string to be sanitized from HTML tags</param>
+    /// <param name="length">The max length of the source</param>
+    /// <param name="ellipsis">Value to add at the end of the returned string</param>
+    /// <returns></returns>
+    public static string Truncate(this string source, int length = 150, string ellipsis = "...")
+    {
+      if (string.IsNullOrWhiteSpace(source))
+        return source;
+
+      if (source.Length <= length)
+        return source;
+
+      source = source.Substring(0, length);
+
+      if (string.IsNullOrWhiteSpace(ellipsis))
+        return source;
+
+      return string.Concat(source, ellipsis);
+    }
   }
 }
