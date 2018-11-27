@@ -52,8 +52,12 @@ namespace Deltatre.Utils.Parsers
 
 			// Formats with hour only
 			"yyyy-MM-dd",
-			"yyyyMMdd"
-		};
+			"yyyyMMdd",
+
+      // Javascript ISO8601 format
+      "yyyy-MM-ddTHH:mm:ss.fffZ",
+      "yyyy-MM-ddTHH:mm:ss.fffzzz"
+    };
 
 		/// <summary>
 		/// Parses a date and time of day represented as a string in the format ISO 8601.
@@ -75,7 +79,7 @@ namespace Deltatre.Utils.Parsers
 
 			return isSuccess ? 
 				OperationResult<DateTimeOffset>.CreateSuccess(result):
-				OperationResult<DateTimeOffset>.CreateFailure();
+				OperationResult<DateTimeOffset>.Failure;
 		}
 	}
 }

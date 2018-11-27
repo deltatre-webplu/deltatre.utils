@@ -153,7 +153,21 @@ namespace Deltatre.Utils.Tests.Parsers
 			Assert.AreEqual(expected, result.Output);
 		}
 
-		private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Microsoft_RoundTrip_Format_Test_Case_Source()
+    [TestCaseSource(nameof(Javascript_Iso8601_Format))]
+    public void ParseIso8601Date_Javascript_Iso8601_Format((string toBeParsed, DateTimeOffset expected) tuple)
+    {
+      // ACT
+      var result = ParseIso8601Date(tuple.toBeParsed);
+
+      // ASSERT
+      Assert.IsNotNull(result);
+      Assert.IsTrue(result.IsSuccess);
+
+      // check parsed value
+      Assert.AreEqual(tuple.expected, result.Output);
+    }
+
+    private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Microsoft_RoundTrip_Format_Test_Case_Source()
 		{
 			yield return (
 				"2009-06-15T13:45:30.0080000",
@@ -546,5 +560,11 @@ namespace Deltatre.Utils.Tests.Parsers
 				new DateTimeOffset(new DateTime(2009, 6, 15, 13, 0, 0), TimeSpan.Zero)
 			);
 		}
+
+    private static IEnumerable<(string toBeParsed, DateTimeOffset expected)> Javascript_Iso8601_Format()
+    {
+      yield return ("2013-02-04T22:44:30.652Z", new DateTimeOffset(new DateTime(2013, 2, 4, 22, 44, 30, 652), TimeSpan.Zero));
+      yield return ("2018-11-27T15:35:36.116+01:00", new DateTimeOffset(new DateTime(2018, 11, 27, 15, 35, 36, 116), TimeSpan.FromHours(1)));
+    }
 	}
 }
