@@ -165,7 +165,7 @@ namespace Deltatre.Utils.Tests.Extensions.Dictionary
         ["dateKey"] = "8/18/2010"
       };
 
-      var culture = new CultureInfo("en-US");
+      var culture = new CultureInfo("en-CA");
       var result = source.GetValueOrDefault<DateTime>("dateKey",culture);
       var expectedDate = new DateTime(2010, 8, 18);
 
