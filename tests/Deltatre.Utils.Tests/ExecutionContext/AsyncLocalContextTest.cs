@@ -66,6 +66,57 @@ namespace Deltatre.Utils.Tests.ExecutionContext
     }
 
     [Test]
+    public void Retrieving_a_non_set_property_should_work_appropriately()
+    {
+      // ACT
+      var obj1 = _asyncLocalContext.GetProperty<SampleObject>("SampleObject");
+      var obj2 = _asyncLocalContext.GetProperty<ISampleInterface>("ISampleInterface");
+      var correlationId = _asyncLocalContext.GetCorrelationId();
+      var someInt = _asyncLocalContext.GetProperty<int>("int");
+      var someBool = _asyncLocalContext.GetProperty<bool>("bool");
+      var someNullableInt = _asyncLocalContext.GetProperty<int?>("int?");
+      var someString = _asyncLocalContext.GetProperty<string>("string");
+
+      // ASSERT
+      Assert.IsNull(obj1);
+      Assert.IsNull(obj2);
+      Assert.AreEqual(Guid.Empty, correlationId);
+      Assert.AreEqual(0, someInt);
+      Assert.IsFalse(someBool);
+      Assert.IsFalse(someNullableInt.HasValue);
+      Assert.IsNull(someString);
+    }
+
+    [Test]
+    public void Can_store_and_retrieve_a_property_using_interface()
+    {
+      // ARRANGE
+      var myObject = new SampleObject();
+
+      // ACT
+      _asyncLocalContext.SetProperty("myObject", myObject);
+      var retrievedObjectGeneric = _asyncLocalContext.GetProperty<ISampleInterface>("myObject");
+      var retrievedObject = _asyncLocalContext.GetProperty("myObject");
+
+      // ASSERT
+      Assert.AreEqual(myObject, retrievedObjectGeneric);
+      Assert.AreEqual(myObject, retrievedObject);
+    }
+
+    [Test]
+    public void Retrieving_an_object_of_the_wrong_type_throws_an_InvalidCastException()
+    {
+      // ARRANGE
+      var myObject = new SampleObject();
+      _asyncLocalContext.SetProperty("myObject", myObject);
+
+      // ACT & ASSERT
+      var exception = Assert.Throws<InvalidCastException>(() => _asyncLocalContext.GetProperty<SomeOtherObject>("myObject"));
+      Assert.IsTrue(exception.Message.Contains(nameof(SampleObject)));
+      Assert.IsTrue(exception.Message.Contains(nameof(SomeOtherObject)));
+    }
+
+    [Test]
     public void Can_push_and_remove_a_property()
     {
       // ARRANGE
@@ -150,7 +201,10 @@ namespace Deltatre.Utils.Tests.ExecutionContext
       Assert.IsNull(retrieved2);
     }
 
-    public class SampleObject
+    public interface ISampleInterface
+    {    }
+
+    public class SampleObject : ISampleInterface
     {
       public string EntityType { get; set; }
       public string TranslationId { get; set; }
@@ -160,6 +214,11 @@ namespace Deltatre.Utils.Tests.ExecutionContext
         EntityType = "MyEntityType";
         TranslationId = Guid.NewGuid().ToString();
       }
+    }
+
+    public class SomeOtherObject
+    {
+      public string Foo { get; set; }
     }
   }
 }
