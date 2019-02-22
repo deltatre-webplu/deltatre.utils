@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Deltatre.Utils.ExecutionContext
 {
@@ -56,6 +57,6 @@ namespace Deltatre.Utils.ExecutionContext
     /// <summary>
     /// Return all properties currently set in the stack.
     /// </summary>
-    Dictionary<string, object> GetAllProperties();
+    ImmutableDictionary<string, object> GetAllProperties();
   }
 }

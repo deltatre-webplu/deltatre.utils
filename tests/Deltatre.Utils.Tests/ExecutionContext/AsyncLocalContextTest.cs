@@ -1,6 +1,7 @@
 ﻿using Deltatre.Utils.ExecutionContext;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -150,25 +151,58 @@ namespace Deltatre.Utils.Tests.ExecutionContext
       var retrievedFirstGuid = Guid.Empty;
       var retrievedSecondGuid = Guid.Empty;
 
-      var firstTask = Task.Factory.StartNew(() =>
-      {
-        Thread.Sleep(1000);
+      var t1 = new Thread(() => {
         _asyncLocalContext.SetCorrelationId(firstTaskGuid);
-        Thread.Sleep(100);
-        retrievedFirstGuid = _asyncLocalContext.GetCorrelationId();
       });
 
-      var secondTask = Task.Factory.StartNew(() =>
-      {
-        _asyncLocalContext.SetCorrelationId(secondTaskGuid);
-        Thread.Sleep(2000);
+      t1.Start();
+      t1.Join();
+
+      var t2 = new Thread(() => {
         retrievedSecondGuid = _asyncLocalContext.GetCorrelationId();
       });
 
-      Task.WaitAll(firstTask, secondTask);
+      t2.Start();
+      t2.Join();
 
-      Assert.AreEqual(firstTaskGuid, retrievedFirstGuid);
-      Assert.AreEqual(secondTaskGuid, retrievedSecondGuid);
+      //Assert.AreEqual(firstTaskGuid, retrievedFirstGuid);
+      Assert.AreEqual(Guid.Empty, retrievedSecondGuid);
+    }
+
+    [Test]
+    public void Multiple_threads_spawned_should_reference_different_instances()
+    {
+      var firstTaskGuid = Guid.NewGuid();
+      var secondTaskGuid = Guid.NewGuid();
+
+      var retrievedFirstGuid = Guid.Empty;
+      var retrievedSecondGuid = Guid.Empty;
+
+      _asyncLocalContext.PushProperty("test2", firstTaskGuid);
+
+      var d1 = _asyncLocalContext.GetAllProperties();
+
+      var tasks = Enumerable.Range(0, 2).Select(_ =>
+      {
+        return Task.Run(() =>
+        {
+          using (_asyncLocalContext.PushProperty("test", firstTaskGuid))
+          {
+            Assert.AreNotSame(d1, _asyncLocalContext.GetAllProperties());
+          }
+        });
+      });
+      Task.WhenAll(tasks).Wait();
+
+      tasks = Enumerable.Range(0, 2).Select(_ =>
+      {
+        return Task.Run(() =>
+        {
+          _asyncLocalContext.SetProperty("test", firstTaskGuid);
+          Assert.AreNotSame(d1, _asyncLocalContext.GetAllProperties());
+        });
+      });
+      Task.WhenAll(tasks).Wait();
     }
 
     [Test]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Threading;
 
 namespace Deltatre.Utils.ExecutionContext
@@ -10,17 +11,14 @@ namespace Deltatre.Utils.ExecutionContext
   public class AsyncLocalContext : IExecutionContext
   {
     private const string CorrelationIdPropertyName = "CorrelationId";
-    private readonly AsyncLocal<Dictionary<string, object>> _asyncLocal = new AsyncLocal<Dictionary<string, object>>();
+    private readonly AsyncLocal<ImmutableDictionary<string, object>> _asyncLocal = new AsyncLocal<ImmutableDictionary<string, object>>();
 
     /// <summary>
     /// Return all properties currently set in the stack.
     /// </summary>
-    public Dictionary<string, object> GetAllProperties()
+    public ImmutableDictionary<string, object> GetAllProperties()
     {
-      if (_asyncLocal.Value == null)
-        _asyncLocal.Value = new Dictionary<string, object>();
-
-      return _asyncLocal.Value;
+      return _asyncLocal.Value ?? ImmutableDictionary.Create<string, object>();
     }
 
     /// <summary>
@@ -95,13 +93,13 @@ namespace Deltatre.Utils.ExecutionContext
     public void RemoveProperty(string propertyName)
     {
       var dictionary = GetAllProperties();
-      dictionary.Remove(propertyName);
+      _asyncLocal.Value = dictionary.Remove(propertyName);
     }
 
     private void SetPropertyInternal(string propertyName, object propertyValue)
     {
       var dictionary = GetAllProperties();
-      dictionary[propertyName] = propertyValue;
+      _asyncLocal.Value = dictionary.SetItem(propertyName, propertyValue);
     }
   }
 }
