@@ -41,6 +41,12 @@ namespace Deltatre.Utils.ExecutionContext
     void SetProperty(string propertyName, object propertyValue);
 
     /// <summary>
+    /// Sets multiple properties in the execution stack
+    /// </summary>
+    /// <param name="properties"></param>
+    void SetProperties(IEnumerable<KeyValuePair<string, object>> properties);
+
+    /// <summary>
     /// Sets a property to be retrieved later in the execution stack, and automatically returns an IDisposable object that
     /// will remove the property from the stack when disposed.
     /// </summary>
@@ -49,10 +55,23 @@ namespace Deltatre.Utils.ExecutionContext
     IDisposable PushProperty(string propertyName, object propertyValue);
 
     /// <summary>
+    /// Sets multiple properties in the execution stack, and automatically returns an IDisposable object that
+    /// will remove the properties from the stack when disposed.
+    /// </summary>
+    /// <param name="properties"></param>
+    IDisposable PushProperties(IEnumerable<KeyValuePair<string, object>> properties);
+
+    /// <summary>
     /// Removes a property from the execution stack.
     /// </summary>
     /// <param name="propertyName"></param>
     void RemoveProperty(string propertyName);
+
+    /// <summary>
+    /// Removes multiple properties from the execution stack.
+    /// </summary>
+    /// <param name="propertyNames"></param>
+    void RemoveProperties(IEnumerable<string> propertyNames);
 
     /// <summary>
     /// Return all properties currently set in the stack.

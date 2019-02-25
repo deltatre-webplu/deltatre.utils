@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 
 namespace Deltatre.Utils.ExecutionContext
@@ -74,6 +75,18 @@ namespace Deltatre.Utils.ExecutionContext
     }
 
     /// <summary>
+    /// Sets multiple properties in the execution stack
+    /// </summary>
+    /// <param name="properties"></param>
+    public void SetProperties(IEnumerable<KeyValuePair<string, object>> properties)
+    {
+      if (properties.Any(p => p.Key.Equals(CorrelationIdPropertyName)))
+        throw new ArgumentException($"{CorrelationIdPropertyName} is a reserved property name.");
+      SetPropertiesInternal(properties);
+    }
+
+
+    /// <summary>
     /// Sets a property to be retrieved later in the execution stack, 
     /// and automatically returns an AsyncLocalContextPropertyBookmark object that
     /// will remove the property from the stack when disposed.
@@ -87,6 +100,17 @@ namespace Deltatre.Utils.ExecutionContext
     }
 
     /// <summary>
+    /// Sets multiple properties in the execution stack, and automatically returns an IDisposable object that
+    /// will remove the properties from the stack when disposed.
+    /// </summary>
+    /// <param name="properties"></param>
+    public IDisposable PushProperties(IEnumerable<KeyValuePair<string, object>> properties)
+    {
+      SetProperties(properties);
+      return new AsyncLocalContextPropertyBookmark(properties.Select(p => p.Key), this);
+    }
+
+    /// <summary>
     /// Removes a property from the execution stack.
     /// </summary>
     /// <param name="propertyName"></param>
@@ -96,10 +120,27 @@ namespace Deltatre.Utils.ExecutionContext
       _asyncLocal.Value = dictionary.Remove(propertyName);
     }
 
+    /// <summary>
+    /// Removes multiple properties from the execution stack.
+    /// </summary>
+    /// <param name="propertyNames"></param>
+    public void RemoveProperties(IEnumerable<string> propertyNames)
+    {
+      var dictionary = GetAllProperties();
+      _asyncLocal.Value = dictionary.RemoveRange(propertyNames);
+    }
+
     private void SetPropertyInternal(string propertyName, object propertyValue)
     {
       var dictionary = GetAllProperties();
       _asyncLocal.Value = dictionary.SetItem(propertyName, propertyValue);
     }
+
+    private void SetPropertiesInternal(IEnumerable<KeyValuePair<string, object>> properties)
+    {
+      var dictionary = GetAllProperties();
+      _asyncLocal.Value = dictionary.SetItems(properties);
+    }
+
   }
 }

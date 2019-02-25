@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Deltatre.Utils.ExecutionContext
 {
@@ -8,7 +9,7 @@ namespace Deltatre.Utils.ExecutionContext
   public class AsyncLocalContextPropertyBookmark : IDisposable
   {
     private readonly IExecutionContext _executionContext;
-    private readonly string _propertyName;
+    private readonly IEnumerable<string> _propertyNames;
 
     /// <summary>
     /// Create a new AsyncLocalContextPropertyBookmark
@@ -18,7 +19,18 @@ namespace Deltatre.Utils.ExecutionContext
     public AsyncLocalContextPropertyBookmark(string propertyName, IExecutionContext contextStack)
     {
       _executionContext = contextStack;
-      _propertyName = propertyName;
+      _propertyNames = new[] { propertyName };
+    }
+
+    /// <summary>
+    /// Create a new AsyncLocalContextPropertyBookmark
+    /// </summary>
+    /// <param name="propertyNames"></param>
+    /// <param name="contextStack"></param>
+    public AsyncLocalContextPropertyBookmark(IEnumerable<string> propertyNames, IExecutionContext contextStack)
+    {
+      _executionContext = contextStack;
+      _propertyNames = propertyNames;
     }
 
     #region IDisposable Support
@@ -34,7 +46,7 @@ namespace Deltatre.Utils.ExecutionContext
       {
         if (disposing)
         {
-          _executionContext.RemoveProperty(_propertyName);
+          _executionContext.RemoveProperties(_propertyNames);
         }
 
         disposedValue = true;

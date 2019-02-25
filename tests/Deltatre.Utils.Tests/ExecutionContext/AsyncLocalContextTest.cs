@@ -1,6 +1,7 @@
 ﻿using Deltatre.Utils.ExecutionContext;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,6 +58,31 @@ namespace Deltatre.Utils.Tests.ExecutionContext
     }
 
     [Test]
+    public void Can_store_and_retrieve_multiple_properties()
+    {
+      // ARRANGE
+      var myObject = new SampleObject();
+      var myObject2 = new SampleObject();
+
+      // ACT
+      _asyncLocalContext.SetProperties(new[] {
+        new KeyValuePair<string, object>("myObject", myObject),
+        new KeyValuePair<string, object>("myObject2", myObject2)
+      });
+
+      var retrievedObjectGeneric = _asyncLocalContext.GetProperty<SampleObject>("myObject");
+      var retrievedObject = _asyncLocalContext.GetProperty("myObject");
+      var retrievedObjectGeneric2 = _asyncLocalContext.GetProperty<SampleObject>("myObject2");
+      var retrievedObject2 = _asyncLocalContext.GetProperty("myObject2");
+
+      // ASSERT
+      Assert.AreEqual(myObject, retrievedObjectGeneric);
+      Assert.AreEqual(myObject, retrievedObject);
+      Assert.AreEqual(myObject2, retrievedObjectGeneric2);
+      Assert.AreEqual(myObject2, retrievedObject2);
+    }
+
+    [Test]
     public void CorrelationId_is_a_reserved_property_name()
     {
       // ARRANGE
@@ -64,6 +90,11 @@ namespace Deltatre.Utils.Tests.ExecutionContext
 
       // ACT & ASSERT
       Assert.Throws<ArgumentException>(() => _asyncLocalContext.SetProperty("CorrelationId", myObject));
+
+      Assert.Throws<ArgumentException>(() => _asyncLocalContext.SetProperties(new[] {
+        new KeyValuePair<string, object>("myObject", myObject),
+        new KeyValuePair<string, object>("CorrelationId", myObject)
+      }));
     }
 
     [Test]
@@ -140,6 +171,45 @@ namespace Deltatre.Utils.Tests.ExecutionContext
       Assert.AreEqual(myObject, retrievedObjectGeneric);
       Assert.AreEqual(myObject, retrievedObject);
       Assert.IsNull(nullObject);
+    }
+
+    [Test]
+    public void Can_push_and_remove_multiple_properties()
+    {
+      // ARRANGE
+      var myObject = new SampleObject();
+      var myObject2 = new SampleObject();
+
+      SampleObject retrievedObjectGeneric;
+      object retrievedObject;
+      SampleObject retrievedObjectGeneric2;
+      object retrievedObject2;
+
+      // ACT
+      using (_asyncLocalContext.PushProperties(new[] {
+        new KeyValuePair<string, object>("myObject", myObject),
+        new KeyValuePair<string, object>("myObject2", myObject2)
+      }))
+      {
+        // inside the using I can correctly retrieve the property
+        retrievedObjectGeneric = _asyncLocalContext.GetProperty<SampleObject>("myObject");
+        retrievedObject = _asyncLocalContext.GetProperty("myObject");
+        retrievedObjectGeneric2 = _asyncLocalContext.GetProperty<SampleObject>("myObject2");
+        retrievedObject2 = _asyncLocalContext.GetProperty("myObject2");
+      }
+
+      // after the dispose, I cannot read the property anymore
+      var nullObject = _asyncLocalContext.GetProperty("myObject");
+      var nullObject2 = _asyncLocalContext.GetProperty("myObject2");
+
+      // ASSERT
+      Assert.AreEqual(myObject, retrievedObjectGeneric);
+      Assert.AreEqual(myObject, retrievedObject);
+      Assert.IsNull(nullObject);
+
+      Assert.AreEqual(myObject2, retrievedObjectGeneric2);
+      Assert.AreEqual(myObject2, retrievedObject2);
+      Assert.IsNull(nullObject2);
     }
 
     [Test]
