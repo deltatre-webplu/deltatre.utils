@@ -58,6 +58,26 @@ namespace Deltatre.Utils.Tests.ExecutionContext
     }
 
     [Test]
+    public async Task Setting_a_property_in_another_thread_does_not_populate_the_context_of_the_main_thread()
+    {
+      // ARRANGE
+      var myObject = new SampleObject();
+      SampleObject retrievedObjectInsideTheTask = null;
+
+      // ACT
+      await Task.Run(() => {
+        _asyncLocalContext.SetProperty("myObject", myObject);
+        retrievedObjectInsideTheTask = _asyncLocalContext.GetProperty<SampleObject>("myObject");
+      }).ConfigureAwait(false);
+
+      var retrievedObject = _asyncLocalContext.GetProperty("myObject");
+
+      // ASSERT
+      Assert.IsNull(retrievedObject);
+      Assert.AreEqual(myObject, retrievedObjectInsideTheTask);
+    }
+
+    [Test]
     public void Can_store_and_retrieve_multiple_properties()
     {
       // ARRANGE
