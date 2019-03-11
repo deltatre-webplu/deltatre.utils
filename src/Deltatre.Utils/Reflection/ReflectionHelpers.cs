@@ -17,7 +17,7 @@ namespace Deltatre.Utils.Reflection
     /// <param name="type">The type being checked in order to determine whether it is a decorator for type <typeparamref name="TDecoratee"/></param>
     /// <returns>True if <paramref name="type"/> is a decorator for <typeparamref name="TDecoratee"/></returns>
     /// <exception cref="ArgumentNullException">Throws <see cref="ArgumentNullException"/> when parameter <paramref name="type"/> is null</exception>
-    public static bool IsDecoratorFor<TDecoratee>(Type type)
+    public static bool IsDecoratorFor<TDecoratee>(Type type) where TDecoratee : class
     {
       if (type == null)
         throw new ArgumentNullException(nameof(type));
