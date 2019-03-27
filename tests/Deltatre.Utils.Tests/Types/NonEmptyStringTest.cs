@@ -221,7 +221,9 @@ namespace Deltatre.Utils.Tests.Types
       var instance = new NonEmptyString("foo");
 
       // ACT
+#pragma warning disable CS1718 // Comparison made to same variable
       var result = instance == instance;
+#pragma warning restore CS1718 // Comparison made to same variable
 
       // ASSERT
       Assert.IsTrue(result);

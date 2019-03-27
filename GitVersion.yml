@@ -1,13 +1,24 @@
+commit-date-format: 'yyMMddHHmmss'
 branches:
- dev\/.+$:
-  mode: ContinuousDeployment
-  tag: unstable
-  increment: Minor
-  prevent-increment-of-merged-branch-version: false
-  track-merge-target: true
- hotfix(es)?[/-]:
-  mode: ContinuousDeployment
-  tag: fix
-  increment: None
-  prevent-increment-of-merged-branch-version: false
-  track-merge-target: true 
+    development:
+        regex: ^develop$
+        tag: unstable
+        increment: Minor
+        prevent-increment-of-merged-branch-version: false
+        track-merge-target: true
+        source-branches: ['master']
+    dev-branches:
+        regex: dev\/.+$
+        tag: unstable
+        increment: Minor
+        prevent-increment-of-merged-branch-version: false
+        track-merge-target: true
+        source-branches: ['master']
+    hotfix:
+        regex: hotfix(es)?[/-]
+        mode: ContinuousDeployment
+        tag: fix
+        increment: Patch
+        prevent-increment-of-merged-branch-version: false
+        track-merge-target: true 
+        source-branches: ['master']

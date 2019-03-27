@@ -10,7 +10,7 @@ namespace Deltatre.Utils.Tests.Dto
 		public void CreateFailure_Returns_An_Instance_Representing_Failed_Validation()
 		{
 			// ACT
-			var result = OperationResult<string>.CreateFailure();
+			var result = OperationResult<string>.Failure;
 
 			// ASSERT
 			Assert.IsNotNull(result);

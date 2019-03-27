@@ -98,7 +98,7 @@ namespace Deltatre.Utils.Tests.Concurrency
         var iterationNumber = Interlocked.Increment(ref counter);
 
         var startTime = DateTime.Now;
-        await Task.Delay(500).ConfigureAwait(false);
+        await Task.Delay(300).ConfigureAwait(false);
         var endTime = DateTime.Now;
 
         iterationInfos.Add((startTime, endTime, iterationNumber));
@@ -112,7 +112,7 @@ namespace Deltatre.Utils.Tests.Concurrency
 
       // ACT
       target.Start();
-      await Task.Delay(600).ConfigureAwait(false);
+      await Task.Delay(1000).ConfigureAwait(false);
       await target.Stop().ConfigureAwait(false);
 
       // ASSERT
