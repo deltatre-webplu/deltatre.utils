@@ -23,22 +23,84 @@ namespace Deltatre.Utils.Tests.ExecutionContext
     public void Can_store_and_retrieve_correlationId()
     {
       // ARRANGE
-      var guid = Guid.NewGuid();
+      const string correlationId = "my correlation id";
 
       // ACT
-      _asyncLocalContext.SetCorrelationId(guid);
-      var retrievedGuid = _asyncLocalContext.GetCorrelationId();
+      _asyncLocalContext.AddCorrelationId(correlationId);
+      var retrievedList = _asyncLocalContext.GetCorrelationIdList();
 
       // ASSERT
-      Assert.AreEqual(guid, retrievedGuid);
+      Assert.AreEqual(1, retrievedList.Count());
+      Assert.AreEqual(correlationId, retrievedList.First());
     }
 
     [Test]
-    public void Retrieving_a_correlationId_without_having_set_it_beforehand_should_return_a_GuidEmpty()
+    public void Pushing_an_already_inserted_correlationId_should_not_add_it_to_the_list()
+    {
+      // ARRANGE
+      const string correlationId1 = "my correlation id";
+      const string correlationId2 = "my correlation id"; // same, but another string instance
+
+      // ACT
+      _asyncLocalContext.AddCorrelationId(correlationId1);
+      var retrievedList1 = _asyncLocalContext.GetCorrelationIdList();
+
+      _asyncLocalContext.AddCorrelationId(correlationId2);
+      var retrievedList2 = _asyncLocalContext.GetCorrelationIdList();
+
+      // ASSERT
+      Assert.AreEqual(1, retrievedList2.Count());
+      Assert.AreEqual(retrievedList1.Count(), retrievedList2.Count());
+
+      Assert.AreEqual(correlationId1, retrievedList1.First());
+      Assert.AreEqual(correlationId2, retrievedList1.First());
+      Assert.AreEqual(correlationId1, retrievedList2.First());
+      Assert.AreEqual(correlationId2, retrievedList2.First());
+    }
+
+    [Test]
+    public void CorrelationId_duplication_avoidance_is_case_sensitive()
+    {
+      // ARRANGE
+      const string correlationId1 = "correlation";
+      var correlationId2 = correlationId1.ToUpper();
+
+      // ACT
+      _asyncLocalContext.AddCorrelationId(correlationId1);
+      var retrievedList1 = _asyncLocalContext.GetCorrelationIdList();
+
+      _asyncLocalContext.AddCorrelationId(correlationId2);
+      var retrievedList2 = _asyncLocalContext.GetCorrelationIdList();
+
+      // ASSERT
+      Assert.AreEqual(1, retrievedList1.Count());
+      Assert.AreEqual(correlationId1, retrievedList1.First());
+
+      Assert.AreEqual(2, retrievedList2.Count());
+      Assert.AreEqual(correlationId1, retrievedList2.First());
+      Assert.AreEqual(correlationId2, retrievedList2.Last());
+    }
+
+    [Test]
+    public void Can_store_and_retrieve_correlationIds_as_a_list()
+    {
+      // ARRANGE
+      var correlationIds = new List<string> { "one", "two", "three" };
+
+      // ACT
+      _asyncLocalContext.SetCorrelationIdList(correlationIds);
+      var retrievedList = _asyncLocalContext.GetCorrelationIdList();
+
+      // ASSERT
+      Assert.AreSame(correlationIds, retrievedList);
+    }
+
+    [Test]
+    public void Retrieving_the_list_of_correlationId_without_having_set_it_beforehand_should_return_null()
     {
       // ASSERT
-      var retrievedGuid = _asyncLocalContext.GetCorrelationId();
-      Assert.AreEqual(Guid.Empty, retrievedGuid);
+      var retrievedList = _asyncLocalContext.GetCorrelationIdList();
+      Assert.IsNull(retrievedList);
     }
 
     [Test]
@@ -103,17 +165,17 @@ namespace Deltatre.Utils.Tests.ExecutionContext
     }
 
     [Test]
-    public void CorrelationId_is_a_reserved_property_name()
+    public void CorrelationIdList_is_a_reserved_property_name()
     {
       // ARRANGE
       var myObject = new SampleObject();
 
       // ACT & ASSERT
-      Assert.Throws<ArgumentException>(() => _asyncLocalContext.SetProperty("CorrelationId", myObject));
+      Assert.Throws<ArgumentException>(() => _asyncLocalContext.SetProperty("CorrelationIdList", myObject));
 
       Assert.Throws<ArgumentException>(() => _asyncLocalContext.SetProperties(new[] {
         new KeyValuePair<string, object>("myObject", myObject),
-        new KeyValuePair<string, object>("CorrelationId", myObject)
+        new KeyValuePair<string, object>("CorrelationIdList", myObject)
       }));
     }
 
@@ -123,7 +185,7 @@ namespace Deltatre.Utils.Tests.ExecutionContext
       // ACT
       var obj1 = _asyncLocalContext.GetProperty<SampleObject>("SampleObject");
       var obj2 = _asyncLocalContext.GetProperty<ISampleInterface>("ISampleInterface");
-      var correlationId = _asyncLocalContext.GetCorrelationId();
+      var someGuid = _asyncLocalContext.GetProperty<Guid>("guid");
       var someInt = _asyncLocalContext.GetProperty<int>("int");
       var someBool = _asyncLocalContext.GetProperty<bool>("bool");
       var someNullableInt = _asyncLocalContext.GetProperty<int?>("int?");
@@ -132,7 +194,7 @@ namespace Deltatre.Utils.Tests.ExecutionContext
       // ASSERT
       Assert.IsNull(obj1);
       Assert.IsNull(obj2);
-      Assert.AreEqual(Guid.Empty, correlationId);
+      Assert.AreEqual(Guid.Empty, someGuid);
       Assert.AreEqual(0, someInt);
       Assert.IsFalse(someBool);
       Assert.IsFalse(someNullableInt.HasValue);
@@ -235,28 +297,63 @@ namespace Deltatre.Utils.Tests.ExecutionContext
     [Test]
     public void CorrelationId_is_per_thread()
     {
-      var firstTaskGuid = Guid.NewGuid();
-      var secondTaskGuid = Guid.NewGuid();
+      var firstCorrelationId = "correlation 1";
 
-      var retrievedFirstGuid = Guid.Empty;
-      var retrievedSecondGuid = Guid.Empty;
+      IEnumerable<string> onAnotherThreadList = new List<string>();
 
       var t1 = new Thread(() => {
-        _asyncLocalContext.SetCorrelationId(firstTaskGuid);
+        _asyncLocalContext.AddCorrelationId(firstCorrelationId);
       });
 
       t1.Start();
       t1.Join();
 
       var t2 = new Thread(() => {
-        retrievedSecondGuid = _asyncLocalContext.GetCorrelationId();
+        onAnotherThreadList = _asyncLocalContext.GetCorrelationIdList();
       });
 
       t2.Start();
       t2.Join();
 
-      //Assert.AreEqual(firstTaskGuid, retrievedFirstGuid);
-      Assert.AreEqual(Guid.Empty, retrievedSecondGuid);
+      Assert.IsNull(onAnotherThreadList);
+    }
+
+    [Test]
+    public void Child_thread_can_push_correlationId_without_altering_the_original_list()
+    {
+      var t1CorrelationId = "correlation 1";
+      var t2CorrelationId = "correlation 2";
+
+      IEnumerable<string> t1List = null;
+      IEnumerable<string> t2List = null;
+
+      var t1 = new Thread(() => {
+
+        _asyncLocalContext.AddCorrelationId(t1CorrelationId);
+
+        var t2 = new Thread(() => {
+          _asyncLocalContext.AddCorrelationId(t2CorrelationId);
+          t2List = _asyncLocalContext.GetCorrelationIdList();
+        });
+
+        t2.Start();
+        t2.Join();
+
+        t1List = _asyncLocalContext.GetCorrelationIdList();
+
+      });
+
+      t1.Start();
+      t1.Join();
+
+      Assert.AreNotSame(t1List, t2List);
+
+      Assert.AreEqual(1, t1List.Count());
+      Assert.AreEqual(t1CorrelationId, t1List.First());
+
+      Assert.AreEqual(2, t2List.Count());
+      Assert.AreEqual(t1CorrelationId, t2List.First());
+      Assert.AreEqual(t2CorrelationId, t2List.Last());
     }
 
     [Test]

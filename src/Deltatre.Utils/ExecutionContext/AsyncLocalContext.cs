@@ -11,7 +11,7 @@ namespace Deltatre.Utils.ExecutionContext
   /// </summary>
   public class AsyncLocalContext : IExecutionContext
   {
-    private const string CorrelationIdPropertyName = "CorrelationId";
+    private const string CorrelationIdPropertyName = "CorrelationIdList";
     private readonly AsyncLocal<ImmutableDictionary<string, object>> _asyncLocal = new AsyncLocal<ImmutableDictionary<string, object>>();
 
     /// <summary>
@@ -23,15 +23,32 @@ namespace Deltatre.Utils.ExecutionContext
     }
 
     /// <summary>
-    /// Gets a correlation id (Guid), to be used for tracking and logging purposes
+    /// Gets a list correlation ids, to be used for tracking and logging purposes.
     /// </summary>
-    public Guid GetCorrelationId() => GetProperty<Guid>(CorrelationIdPropertyName);
+    public IEnumerable<string> GetCorrelationIdList() => GetProperty<IEnumerable<string>>(CorrelationIdPropertyName);
 
     /// <summary>
-    /// Sets a correlation id (Guid), to be used for tracking and logging purposes
+    /// Sets a list of correlation ids, replacing the current one, to be used for tracking and logging purposes.
+    /// </summary>
+    /// <param name="correlationIds"></param>
+    /// <remarks>
+    ///   You will probably rarely need to use this method. 
+    ///   Generally, you should add a new correlationId using <see cref="AddCorrelationId(string)" />
+    /// </remarks>
+    public void SetCorrelationIdList(IEnumerable<string> correlationIds) => SetPropertyInternal(CorrelationIdPropertyName, correlationIds);
+
+    /// <summary>
+    /// Adds the given correlationId to the list of correlationIds.
     /// </summary>
     /// <param name="correlationId"></param>
-    public void SetCorrelationId(Guid correlationId) => SetPropertyInternal(CorrelationIdPropertyName, correlationId);
+    public void AddCorrelationId(string correlationId)
+    {
+      var currentList = GetCorrelationIdList() ?? new List<string>();
+      var newList = new List<string>(currentList);
+      if (!newList.Contains(correlationId))
+        newList.Add(correlationId);
+      SetCorrelationIdList(newList);
+    }
 
     /// <summary>
     /// Gets a previously set property.

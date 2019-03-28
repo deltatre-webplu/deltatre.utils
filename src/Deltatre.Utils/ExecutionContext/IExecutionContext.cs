@@ -5,20 +5,30 @@ using System.Collections.Immutable;
 namespace Deltatre.Utils.ExecutionContext
 {
   /// <summary>
-  /// An interface to implement (per thread) execution context property storage and handling
+  /// An interface to implement (per thread) execution context property storage and handling.
   /// </summary>
   public interface IExecutionContext
   {
     /// <summary>
-    /// Gets a correlation id (Guid), to be used for tracking and logging purposes
+    /// Gets a list correlation ids, to be used for tracking and logging purposes.
     /// </summary>
-    Guid GetCorrelationId();
+    IEnumerable<string> GetCorrelationIdList();
 
     /// <summary>
-    /// Sets a correlation id (Guid), to be used for tracking and logging purposes
+    /// Sets a list of correlation ids, replacing the current one, to be used for tracking and logging purposes.
+    /// </summary>
+    /// <param name="correlationIds"></param>
+    /// <remarks>
+    ///   You will probably rarely need to use this method. 
+    ///   Generally, you should add a new correlationId using <see cref="AddCorrelationId(string)"/>
+    /// </remarks>
+    void SetCorrelationIdList(IEnumerable<string> correlationIds);
+
+    /// <summary>
+    /// Adds the given correlationId to the list of correlationIds.
     /// </summary>
     /// <param name="correlationId"></param>
-    void SetCorrelationId(Guid correlationId);
+    void AddCorrelationId(string correlationId);
 
     /// <summary>
     /// Gets a previously set property.
