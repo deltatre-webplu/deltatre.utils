@@ -158,7 +158,7 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  (IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems) tuple)
 	  {
 			// ACT
-		  var result = tuple.startingSequence.ToHashSet();
+		  var result = EnumerableExtensions.ToHashSet(tuple.startingSequence);
 
 		  // ASSERT
 			Assert.IsNotNull(result);
@@ -169,11 +169,11 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 	  public void ToHashSet_Creates_An_HashSet_With_The_Unique_Elements_Of_Starting_Sequence_When_Equality_Comparer_Is_Specified(
 		  (IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems) tuple)
 	  {
-		  // ACT
-		  var result = tuple.startingSequence.ToHashSet(StringComparer.InvariantCultureIgnoreCase);
+      // ACT
+      var result = EnumerableExtensions.ToHashSet(tuple.startingSequence, StringComparer.InvariantCultureIgnoreCase);
 
-		  // ASSERT
-		  Assert.IsNotNull(result);
+      // ASSERT
+      Assert.IsNotNull(result);
 		  CollectionAssert.AreEquivalent(tuple.uniqueItems, result);
 	  }
 

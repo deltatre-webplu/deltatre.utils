@@ -1,6 +1,7 @@
 ﻿using Deltatre.Utils.Reflection;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace Deltatre.Utils.Tests.Reflection
 {
@@ -114,6 +115,18 @@ namespace Deltatre.Utils.Tests.Reflection
 
       // ASSERT
       Assert.IsFalse(result);
+    }
+
+    [Test]
+    public void LoadAssembliesFromBinariesFolder_Returns_Assemblies_From_Binaries_Folder()
+    {
+      // ACT
+      var assemblies = ReflectionHelpers.LoadAssembliesFromBinariesFolder();
+
+      // ASSERT
+      Assert.IsNotNull(assemblies);
+      Assert.GreaterOrEqual(assemblies.Count, 1);
+      Assert.IsTrue(assemblies.Any(a => a.GetName().Name == "Deltatre.Utils.Tests"));
     }
 
     public interface IService
