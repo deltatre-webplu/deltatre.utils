@@ -20,7 +20,7 @@ namespace Deltatre.Utils.Functional
 		/// <param name="predicate">The predicate that must be satisfied</param>
 		/// <param name="projector"></param>
 		/// <returns>The result of the get operation being performed</returns>
-		public static GetItemResult<TResult> GetFirst<TSource, TResult>(
+		public static OperationResult<TResult> GetFirst<TSource, TResult>(
 			IEnumerable<TSource> source,
 			Func<TSource, bool> predicate,
 			Func<TSource, TResult> projector)
@@ -39,11 +39,12 @@ namespace Deltatre.Utils.Functional
 			var notFound = EqualityComparer<TSource>.Default.Equals(firstMatch, default(TSource));
 			if (notFound)
 			{
-				return GetItemResult<TResult>.CreateForItemNotFound();
-			}
+        return OperationResult<TResult>.Failure;
+
+      }
 
 			var projection = projector(firstMatch);
-			return GetItemResult<TResult>.CreateForItemFound(projection);
+      return projection;
 		}
 
 		/// <summary>
@@ -53,7 +54,7 @@ namespace Deltatre.Utils.Functional
 		/// <param name="source">The source from which the item is retrieved</param>
 		/// <param name="predicate">The predicate that must be satisfied</param>
 		/// <returns>The result of the get operation being performed</returns>
-		public static GetItemResult<T> GetFirst<T>(
+		public static OperationResult<T> GetFirst<T>(
 			IEnumerable<T> source,
 			Func<T, bool> predicate) => 
 				GetFirst(source, predicate, Identity);

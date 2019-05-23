@@ -66,8 +66,8 @@ namespace Deltatre.Utils.Tests.Functional
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsFalse(result.Found);
-			Assert.AreEqual(default(int), result.Item);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(default(int), result.Output);
 		}
 
 		[Test]
@@ -87,8 +87,8 @@ namespace Deltatre.Utils.Tests.Functional
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.Found);
-			Assert.AreEqual(7, result.Item);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(7, result.Output);
 		}
 
 		[Test]
@@ -108,8 +108,8 @@ namespace Deltatre.Utils.Tests.Functional
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.Found);
-			Assert.AreEqual(7, result.Item);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual(7, result.Output);
 		}
 
 		[Test]
@@ -149,8 +149,8 @@ namespace Deltatre.Utils.Tests.Functional
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsFalse(result.Found);
-			Assert.AreEqual(default(string), result.Item);
+			Assert.IsFalse(result.IsSuccess);
+			Assert.AreEqual(default(string), result.Output);
 		}
 
 		[Test]
@@ -168,8 +168,8 @@ namespace Deltatre.Utils.Tests.Functional
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.Found);
-			Assert.AreEqual("minimum", result.Item);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual("minimum", result.Output);
 		}
 
 		[Test]
@@ -187,8 +187,8 @@ namespace Deltatre.Utils.Tests.Functional
 
 			// ASSERT
 			Assert.IsNotNull(result);
-			Assert.IsTrue(result.Found);
-			Assert.AreEqual("minimum", result.Item);
+			Assert.IsTrue(result.IsSuccess);
+			Assert.AreEqual("minimum", result.Output);
 		}
 	}
 }
