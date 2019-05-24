@@ -118,10 +118,17 @@ namespace Deltatre.Utils.Tests.Reflection
     }
 
     [Test]
+    public void LoadAssembliesFromBinariesFolder_Throws_ArgumentNullException_When_RunningApplicationAssembly_Is_Null()
+    {
+      // ACT
+      Assert.Throws<ArgumentNullException>(() => ReflectionHelpers.LoadAssembliesFromBinariesFolder(null));
+    }
+
+    [Test]
     public void LoadAssembliesFromBinariesFolder_Returns_Assemblies_From_Binaries_Folder()
     {
       // ACT
-      var assemblies = ReflectionHelpers.LoadAssembliesFromBinariesFolder();
+      var assemblies = ReflectionHelpers.LoadAssembliesFromBinariesFolder(this.GetType().Assembly);
 
       // ASSERT
       Assert.IsNotNull(assemblies);

@@ -51,6 +51,7 @@ namespace Deltatre.Utils.Reflection
     /// <summary>
     /// Gets all assemblies in the binaries folder matching the specified search pattern. 
     /// </summary>
+    /// <param name="runningApplicationAssembly">The assembly of the currently running application. This is the application for which you want to query the binaries folder.</param>
     /// <param name="searchPattern">
     /// The search pattern to be used to filter the returned assemblies. 
     /// This parameter can contain a combination of valid literal path and wildcard (* and ?) characters,
@@ -61,13 +62,18 @@ namespace Deltatre.Utils.Reflection
     /// One of the enumeration values that specifies whether the search operation should include 
     /// all subdirectories or only the current directory.
     /// </param>
+    /// <exception cref="ArgumentNullException">Throws <see cref="ArgumentNullException"/> when <paramref name="runningApplicationAssembly"/> is null</exception>
     /// <returns>All the assemblies in the binaries folder matching the specified search pattern.</returns>
     public static ReadOnlyCollection<Assembly> LoadAssembliesFromBinariesFolder(
+      Assembly runningApplicationAssembly,
       string searchPattern = null,
       SearchOption searchOption = SearchOption.TopDirectoryOnly)
     {
-      var runningAssemblyFullPath = Assembly.GetExecutingAssembly().Location;
-      var binariesFolderFullPath = Path.GetDirectoryName(runningAssemblyFullPath);
+      if (runningApplicationAssembly == null)
+        throw new ArgumentNullException(nameof(runningApplicationAssembly));
+
+      var runningApplicationAssemblyFullPath = runningApplicationAssembly.Location;
+      var binariesFolderFullPath = Path.GetDirectoryName(runningApplicationAssemblyFullPath);
 
       var normalizedSearchPattern = string.IsNullOrWhiteSpace(searchPattern) ?
         OnlyFilesWithDllExtensionPattern :
