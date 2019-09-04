@@ -29,6 +29,21 @@ namespace Deltatre.Utils.Dto
 		}
 
 		/// <summary>
+		/// Call this method to create an instance representing the result of a failed operation.
+		/// </summary>
+		/// <param name="error">The detected error</param>
+		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter errors is null</exception>
+		/// <returns>An instance representing the result of a failed operation.</returns>
+		/// <remarks>Property Output will be set equal to the default value of type TOutput.</remarks>
+		public static OperationResult<TOutput, TError> CreateFailure(TError error)
+		{
+			if (error == null)
+				throw new ArgumentNullException(nameof(error));
+
+			return CreateFailure(new NonEmptySequence<TError>(new[] { error }));
+		}
+
+		/// <summary>
 		/// Call this method to create an instance representing the result of a successful operation. The list of errors will be set to an empty list.
 		/// </summary>
 		/// <param name="output">The operation output.</param>
