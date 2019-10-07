@@ -28,7 +28,7 @@ namespace Deltatre.Utils.Types
 			var itemsArray = items.ToArray();
 
 			if (itemsArray.Length == 0)
-				throw new ArgumentException($"Parameter '{nameof(items)}' cannot be an empty sequence.");
+				throw new ArgumentException($"Parameter '{nameof(items)}' cannot be an empty sequence.", nameof(items));
 
 			_items = itemsArray;
 		}

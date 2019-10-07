@@ -12,15 +12,23 @@ namespace Deltatre.Utils.Tests.Types
 		public void Ctor_Throws_When_Items_Is_Null()
 		{
 			// ACT
-			Assert.Throws<ArgumentNullException>(() => new NonEmptySequence<string>(null));
+			var exception = Assert.Throws<ArgumentNullException>(() => new NonEmptySequence<string>(null));
+
+      // ASSERT
+      Assert.IsNotNull(exception);
+      Assert.AreEqual("items", exception.ParamName);
 		}
 
 		[Test]
 		public void Ctor_Throws_When_Items_Is_Empty_Sequence()
 		{
 			// ACT
-			Assert.Throws<ArgumentException>(() => new NonEmptySequence<string>(Enumerable.Empty<string>()));
-		}
+			var exception = Assert.Throws<ArgumentException>(() => new NonEmptySequence<string>(Enumerable.Empty<string>()));
+
+      // ASSERT
+      Assert.IsNotNull(exception);
+      Assert.AreEqual("items", exception.ParamName);
+    }
 
 		[Test]
 		public void Ctor_Creates_An_Enumerable_Instance()
