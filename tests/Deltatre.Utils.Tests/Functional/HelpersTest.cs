@@ -67,7 +67,6 @@ namespace Deltatre.Utils.Tests.Functional
 			// ASSERT
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(default(int), result.Output);
 		}
 
 		[Test]
@@ -150,7 +149,6 @@ namespace Deltatre.Utils.Tests.Functional
 			// ASSERT
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(default(string), result.Output);
 		}
 
 		[Test]
