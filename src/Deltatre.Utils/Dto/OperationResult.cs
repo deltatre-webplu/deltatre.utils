@@ -21,15 +21,6 @@ namespace Deltatre.Utils.Dto
     public static OperationResult<TOutput> CreateSuccess(TOutput output) =>
 			new OperationResult<TOutput>(true, output);
 
-    /// <summary>
-    /// Call this method to create an instance representing the result of a failed operation.
-    /// </summary>
-    /// <returns>An instance representing the result of a failed operation.</returns>
-    /// <remarks>Property Output will be set equal to the default value of type TOutput.</remarks>
-    [Obsolete("Use the static field Failure instead")]
-    public static OperationResult<TOutput> CreateFailure() =>
-			new OperationResult<TOutput>(false, default(TOutput));
-
     private OperationResult(bool isSuccess, TOutput output)
     {
       IsSuccess = isSuccess;

@@ -13,6 +13,7 @@
 	  <RepositoryUrl>https://github.com/deltatre-webplu/deltatre.utils</RepositoryUrl>
 	  <RepositoryType>git</RepositoryType>
 	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
