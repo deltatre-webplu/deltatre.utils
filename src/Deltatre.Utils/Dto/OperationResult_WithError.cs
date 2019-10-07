@@ -25,7 +25,7 @@ namespace Deltatre.Utils.Dto
 			if (errors == null)
 				throw new ArgumentNullException(nameof(errors));
 
-			return new OperationResult<TOutput, TError>(default(TOutput), errors);
+			return new OperationResult<TOutput, TError>(default, errors);
 		}
 
 		/// <summary>
