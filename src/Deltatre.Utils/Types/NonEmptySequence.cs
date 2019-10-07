@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Deltatre.Utils.Types
 {
-	/// <inheritdoc />
+  /// <inheritdoc />
 	/// <summary>
 	/// This type represents a non empty sequence of items
 	/// </summary>
@@ -14,16 +14,19 @@ namespace Deltatre.Utils.Types
 	{
 		private readonly T[] _items;
 
-		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter items is null</exception>
-		/// <exception cref="ArgumentException">Throws ArgumentException when parameter items is an empty sequence</exception>
-		public NonEmptySequence(IEnumerable<T> items)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NonEmptySequence{T}"/> class.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">Throws ArgumentNullException when <paramref name="items"/> is null</exception>
+    /// <exception cref="ArgumentException">Throws ArgumentException when <paramref name="items"/> is an empty sequence</exception>
+    public NonEmptySequence(IEnumerable<T> items)
 		{
 			if (items == null)
 				throw new ArgumentNullException(nameof(items));
 
 			var itemsArray = items.ToArray();
 
-			if (!itemsArray.Any())
+			if (itemsArray.Length == 0)
 				throw new ArgumentException($"Parameter '{nameof(items)}' cannot be an empty sequence.");
 
 			_items = itemsArray;
