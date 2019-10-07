@@ -67,7 +67,13 @@ namespace Deltatre.Utils.Dto
     {
       get
       {
-        throw new NotImplementedException();
+        if (!this.IsSuccess)
+        {
+          throw new InvalidOperationException(
+            "Reading the operation output is not allowed because the operation is failed.");
+        }
+
+        return _output;
       }
     }
 
