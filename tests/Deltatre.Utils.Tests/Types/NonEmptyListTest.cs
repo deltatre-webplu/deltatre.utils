@@ -1,9 +1,7 @@
 ﻿using Deltatre.Utils.Types;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Deltatre.Utils.Tests.Types
 {
@@ -39,11 +37,41 @@ namespace Deltatre.Utils.Tests.Types
       var items = new[] { "foo", "bar" };
 
       // ACT
-      var result = new NonEmptySequence<string>(items);
+      var result = new NonEmptyList<string>(items);
 
       // ASSERT
       Assert.IsNotNull(result);
       CollectionAssert.AreEqual(new[] { "foo", "bar" }, result);
+    }
+
+    [Test]
+    public void Count_Returns_Number_Of_Items_In_List()
+    {
+      // ARRANGE
+      var items = new[] { "foo", "bar" };
+      var target = new NonEmptyList<string>(items);
+
+      // ACT
+      var result = target.Count;
+
+      // ASSERT
+      Assert.AreEqual(2, result);
+    }
+
+    [Test]
+    public void Indexer_Can_Be_Used_To_Access_List_Items()
+    {
+      // ARRANGE
+      var items = new[] { "foo", "bar" };
+      var target = new NonEmptyList<string>(items);
+
+      // ACT
+      var firstItem = target[0];
+      var secondItem = target[1];
+
+      // ASSERT
+      Assert.AreEqual("foo", firstItem);
+      Assert.AreEqual("bar", secondItem);
     }
   }
 }
