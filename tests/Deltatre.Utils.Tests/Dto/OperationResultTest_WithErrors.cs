@@ -13,16 +13,20 @@ namespace Deltatre.Utils.Tests.Dto
 		public void CreateFailure_Throws_When_Errors_Is_Null()
 		{
 			// ARRANGE
-			const string nullString = null;
 			NonEmptySequence<string> nullSequence = null;
 
 			// ACT
-			Assert.Throws<ArgumentNullException>(() => OperationResult<string, string>.CreateFailure(nullString));
-			Assert.Throws<ArgumentNullException>(() => OperationResult<string, string>.CreateFailure(nullSequence));
+			var exception = Assert.Throws<ArgumentNullException>(() => 
+        OperationResult<string, string>.CreateFailure(nullSequence)
+      );
+
+      // ASSERT
+      Assert.IsNotNull(exception);
+      Assert.AreEqual("errors", exception.ParamName);
 		}
 
 		[Test]
-		public void CreateFailure_Allows_To_Create_Failure_Result_With_Errors_Providing_A_NonEmptySequence()
+		public void CreateFailure_Allows_To_Create_Failure_Result_Providing_A_NonEmptySequence_Of_Errors()
 		{
 			// ARRANGE
 			var errors = new[] { "something bad occurred", "invalid prefix detected" }.ToNonEmptySequence();
@@ -33,13 +37,12 @@ namespace Deltatre.Utils.Tests.Dto
 			// ASSERT
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.IsNull(result.Output);
 			Assert.IsNotNull(result.Errors);
 			CollectionAssert.AreEqual(errors, result.Errors);
 		}
 
 		[Test]
-		public void CreateFailure_Allows_To_Create_Failure_Result_With_Error_Providing_An_Error_Object()
+		public void CreateFailure_Allows_To_Create_Failure_Result_Providing_A_Single_Error_Object()
 		{
 			// ARRANGE
 			const string error = "something bad occurred";
@@ -50,10 +53,8 @@ namespace Deltatre.Utils.Tests.Dto
 			// ASSERT
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.IsNull(result.Output);
 			Assert.IsNotNull(result.Errors);
-			Assert.IsNotEmpty(result.Errors);
-			CollectionAssert.AreEqual(error, result.Errors[0]);
+			CollectionAssert.AreEqual(new[] { error }, result.Errors);
 		}
 
 		[Test]
