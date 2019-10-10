@@ -134,7 +134,6 @@ namespace Deltatre.Utils.Tests.Parsers
 			// ASSERT
 			Assert.IsNotNull(result);
 			Assert.IsFalse(result.IsSuccess);
-			Assert.AreEqual(default(DateTimeOffset), result.Output);
 		}
 
 		[TestCase("2018-05-21")]

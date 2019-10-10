@@ -19,53 +19,63 @@ namespace Deltatre.Utils.Dto
 		/// <param name="errors">All the detected errors</param>
 		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter errors is null</exception>
 		/// <returns>An instance representing the result of a failed operation.</returns>
-		/// <remarks>Property Output will be set equal to the default value of type TOutput.</remarks>
 		public static OperationResult<TOutput, TError> CreateFailure(NonEmptySequence<TError> errors)
 		{
 			if (errors == null)
 				throw new ArgumentNullException(nameof(errors));
 
-			return new OperationResult<TOutput, TError>(default(TOutput), errors);
+			return new OperationResult<TOutput, TError>(default, errors);
 		}
 
 		/// <summary>
 		/// Call this method to create an instance representing the result of a failed operation.
 		/// </summary>
 		/// <param name="error">The detected error</param>
-		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter errors is null</exception>
 		/// <returns>An instance representing the result of a failed operation.</returns>
-		/// <remarks>Property Output will be set equal to the default value of type TOutput.</remarks>
-		public static OperationResult<TOutput, TError> CreateFailure(TError error)
-		{
-			if (error == null)
-				throw new ArgumentNullException(nameof(error));
+		public static OperationResult<TOutput, TError> CreateFailure(TError error) =>
+      CreateFailure(new NonEmptySequence<TError>(new[] { error }));
 
-			return CreateFailure(new NonEmptySequence<TError>(new[] { error }));
-		}
-
-		/// <summary>
-		/// Call this method to create an instance representing the result of a successful operation. The list of errors will be set to an empty list.
-		/// </summary>
-		/// <param name="output">The operation output.</param>
-		/// <returns>An instance representing the result of a successful operation.</returns>
-		public static OperationResult<TOutput, TError> CreateSuccess(TOutput output) =>
+    /// <summary>
+    /// Call this method to create an instance representing the result of a successful operation. The list of errors will be set to an empty list.
+    /// </summary>
+    /// <param name="output">The operation output.</param>
+    /// <returns>An instance representing the result of a successful operation.</returns>
+    public static OperationResult<TOutput, TError> CreateSuccess(TOutput output) =>
 			new OperationResult<TOutput, TError>(output, Enumerable.Empty<TError>());
+
+    private readonly TOutput _output;
 
     private OperationResult(TOutput output, IEnumerable<TError> errors)
     {
-      Output = output;
+      _output = output;
       Errors = new ReadOnlyCollection<TError>(errors.ToList());
     }
 
     /// <summary>
-    /// Indicates whether the operation completed successfully. 
+    /// Gets a flag indicating whether the operation completed successfully. 
     /// </summary>
     public bool IsSuccess => Errors.Count == 0;
 
-		/// <summary>
-		/// This is the result produced from the operation. In case of failed operation it will be set to the default value of type TOutput.
-		/// </summary>
-		public TOutput Output { get; }
+    /// <summary>
+    /// Gets the result produced from the operation. 
+    /// Accessing this property throws <see cref="System.InvalidOperationException"/> when property <see cref="IsSuccess"/> is <see langword="false"/>.
+    /// </summary>
+    /// <exception cref="System.InvalidOperationException">
+    /// Throws <see cref="System.InvalidOperationException"/> when property <see cref="IsSuccess"/> is <see langword="false"/>.
+    /// </exception>
+    public TOutput Output
+    {
+      get
+      {
+        if (!this.IsSuccess)
+        {
+          throw new InvalidOperationException(
+            "Reading the operation output is not allowed because the operation is failed.");
+        }
+
+        return _output;
+      }
+    }
 
 		/// <summary>
 		/// All the detected errors. In case of successfull operation this collection will be empty.
