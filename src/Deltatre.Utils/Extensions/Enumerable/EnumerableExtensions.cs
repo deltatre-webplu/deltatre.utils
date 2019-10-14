@@ -21,9 +21,14 @@ namespace Deltatre.Utils.Extensions.Enumerable
 			return !source.Any();
 		}
 
-		/// <exception cref="System.ArgumentNullException"> Throws ArgumenNullException when parameter source is null </exception>
-		/// <exception cref="System.ArgumentNullException"> Throws ArgumenNullException when parameter toBeDone is null </exception>
-		public static void ForEach<T>(this IEnumerable<T> source, Action<T> toBeDone)
+    /// <summary>
+    /// Performs the specified action on each element of the provided <see cref="IEnumerable{T}"/>
+    /// </summary>
+    /// <param name="source">The sequence of items on which to execute the specified action</param>
+    /// <param name="toBeDone">The action to be executed for each item in <paramref name="source"/></param>
+    /// <exception cref="ArgumentNullException"> Throws ArgumenNullException when parameter source is null </exception>
+    /// <exception cref="ArgumentNullException"> Throws ArgumenNullException when parameter toBeDone is null </exception>
+    public static void ForEach<T>(this IEnumerable<T> source, Action<T> toBeDone)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
@@ -35,6 +40,12 @@ namespace Deltatre.Utils.Extensions.Enumerable
 				toBeDone(item);
 		}
 
+		/// <summary>
+		/// Checks whether a sequence of items contains duplicate elements.
+		/// </summary>
+    /// <param name="source">The sequence of items to be checked for duplicates.</param>
+    /// <param name="comparer">The equality comparer to be used when checking for duplicates in <paramref name="source"/>. Pass null if you want to use the default equality comparer for type <typeparamref name="T"/>.</param>
+    /// <returns>A boolean value indicating whether or not <paramref name="source"/> contains duplicate elements.</returns>
 		/// <exception cref="ArgumentNullException">Throws ArgumenNullException when parameter source is null</exception>
 		/// <remarks> Use default equality comparer if parameter comparer is not specified </remarks>
 		public static bool HasDuplicates<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer = null)
@@ -50,7 +61,13 @@ namespace Deltatre.Utils.Extensions.Enumerable
 			return hasDuplicates;
 		}
 
-		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter source is null</exception>
+		/// <summary>
+		/// Creates an instance of <see cref="NonEmptySequence{T}"/> containing the items of the provided sequence.
+		/// </summary>
+    /// <param name="source">The sequence of items to be used to create an instance of <see cref="NonEmptySequence{T}"/>.</param>
+    /// <typeparam name="T">The type of the items in <paramref name="source"/></typeparam>
+    /// <returns>An instance of <see cref="NonEmptySequence{T}"/> containing the items of <paramref name="source"/>.</returns>
+		/// <exception cref="ArgumentNullException">Throws <see cref="ArgumentNullException"/> when <paramref name="source"/> is null</exception>
 		public static NonEmptySequence<T> ToNonEmptySequence<T>(this IEnumerable<T> source)
 		{
 			if (source == null)
@@ -59,13 +76,28 @@ namespace Deltatre.Utils.Extensions.Enumerable
 			return new NonEmptySequence<T>(source);
 		}
 
-		/// <summary>
-		/// Creates an hash set from a sequence of items. The default equality comparer for the type argument will be used.
-		/// </summary>
-		/// <typeparam name="T">The type of the items inside the starting sequence</typeparam>
-		/// <param name="source">The starting sequence</param>
-		/// <returns>An hash set containing the unique elements of the starting sequence</returns>
-		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) => 
+    /// <summary>
+    /// Creates an instance of <see cref="NonEmptyList{T}"/> containing the items of the provided sequence.
+    /// </summary>
+    /// <typeparam name="T">The type of the items in <paramref name="source"/></typeparam>
+    /// <param name="source">The sequence of items to be used to create an instance of <see cref="NonEmptyList{T}"/>.</param>
+    /// <returns>An instance of <see cref="NonEmptyList{T}"/> containing the items of <paramref name="source"/>.</returns>
+    /// <exception cref="ArgumentNullException">Throws <see cref="ArgumentNullException"/> when <paramref name="source"/> is null.</exception>
+    public static NonEmptyList<T> ToNonEmptyList<T>(this IEnumerable<T> source)
+    {
+      if (source == null)
+        throw new ArgumentNullException(nameof(source));
+
+      return new NonEmptyList<T>(source);
+    }
+
+    /// <summary>
+    /// Creates an hash set from a sequence of items. The default equality comparer for the type argument will be used.
+    /// </summary>
+    /// <typeparam name="T">The type of the items inside the starting sequence</typeparam>
+    /// <param name="source">The starting sequence</param>
+    /// <returns>An hash set containing the unique elements of the starting sequence</returns>
+    public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source) => 
 			source.ToHashSet(EqualityComparer<T>.Default);
 
 		/// <summary>
@@ -88,18 +120,20 @@ namespace Deltatre.Utils.Extensions.Enumerable
 		/// <exception cref="ArgumentNullException">Throws ArgumentNullException when parameter source is null</exception>
 		/// <exception cref="ArgumentOutOfRangeException">Throws ArgumentOutOfRangeException when parameter batchSize is less than or equal to zero</exception>
 		public static IEnumerable<IEnumerable<T>> SplitInBatches<T>(
-			this IEnumerable<T> source, 
+			this IEnumerable<T> source,
 			int batchSize)
 		{
 			if (source == null)
 				throw new ArgumentNullException(nameof(source));
 
 			if(batchSize <= 0)
-				throw new ArgumentOutOfRangeException(
-					nameof(batchSize), 
+      {
+        throw new ArgumentOutOfRangeException(
+					nameof(batchSize),
 					$"Batch size is expected to be a positive integer, but was {batchSize}.");
+      }
 
-			return SplitInBatchesImplementation(source, batchSize);
+      return SplitInBatchesImplementation(source, batchSize);
 		}
 
 		private static IEnumerable<IEnumerable<T>> SplitInBatchesImplementation<T>(

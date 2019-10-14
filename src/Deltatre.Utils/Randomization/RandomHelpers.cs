@@ -7,7 +7,7 @@ namespace Deltatre.Utils.Randomization
   /// </summary>
   public static class RandomHelpers
   {
-    private static readonly string AlphanumericChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private const string AlphanumericChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     /// <summary>
     /// Call this method to get a random alphanumeric string 
