@@ -305,7 +305,50 @@ namespace Deltatre.Utils.Tests.Extensions.Enumerable
 		  CollectionAssert.AreEqual(Linq.Enumerable.Range(11, 3), batch3);
 	  }
 
-		private static IEnumerable<(IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems)>
+    [Test]
+    public void ToNonEmptyList_Throws_ArgumentNullException_When_Source_Is_Null() 
+    {
+      // ACT
+      var exception = Assert.Throws<ArgumentNullException>(() =>
+        EnumerableExtensions.ToNonEmptyList<string>(null));
+
+      // ASSERT
+      Assert.IsNotNull(exception);
+      Assert.AreEqual("source", exception.ParamName);
+    }
+
+    [Test]
+    public void ToNonEmptyList_Returns_Non_Null_Result()
+    {
+      // ARRANGE
+      var source = new[] { "foo", "bar" };
+
+      // ACT
+      var result = source.ToNonEmptyList();
+
+      // ASSERT
+      Assert.IsNotNull(result);
+    }
+
+    [Test]
+    public void ToNonEmptyList_Returns_Non_Empty_List_Containing_Items_Of_The_Provided_Sequence()
+    {
+      // ARRANGE
+      var source = new[] { "foo", "bar" };
+
+      // ACT
+      var result = source.ToNonEmptyList();
+
+      // ASSERT
+      CollectionAssert.AreEqual(source, result);
+
+      Assert.AreEqual(2, result.Count);
+      
+      Assert.AreEqual("foo", result[0]);
+      Assert.AreEqual("bar", result[1]);
+    }
+
+    private static IEnumerable<(IEnumerable<string> startingSequence, IEnumerable<string> uniqueItems)>
 		  GetTestCasesForToHashSet()
 	  {
 		  yield return (new string[0], new string[0]);
