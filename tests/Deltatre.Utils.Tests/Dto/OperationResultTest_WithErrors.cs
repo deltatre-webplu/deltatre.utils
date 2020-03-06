@@ -137,5 +137,69 @@ namespace Deltatre.Utils.Tests.Dto
       // ASSERT
       Assert.AreEqual("the message", result);
     }
+
+    [Test]
+    public void Error_Throws_InvalidOperationException_When_Operation_Is_Successful()
+    {
+      // ARRANGE
+      var target = OperationResult<string, string>.CreateSuccess("the message");
+
+      // ACT
+      var exception = Assert.Throws<InvalidOperationException>(
+        () => _ = target.Error
+      );
+
+      // ASSERT
+      Assert.IsNotNull(exception);
+      Assert.IsFalse(string.IsNullOrWhiteSpace(exception.Message));
+    }
+
+    [Test]
+    public void Error_Does_Not_Throw_When_Operation_Is_Failed_With_One_Error()
+    {
+      // ARRANGE
+      var target = OperationResult<string, string>.CreateFailure("something bad happened!");
+
+      // ACT
+      Assert.DoesNotThrow(() => _ = target.Error);
+    }
+
+    [Test]
+    public void Error_Does_Not_Throw_When_Operation_Is_Failed_With_Several_Errors()
+    {
+      // ARRANGE
+      var errors = new NonEmptySequence<string>(new[] { "something bad happened!", "kaboom!" });
+      var target = OperationResult<string, string>.CreateFailure(errors);
+
+      // ACT
+      Assert.DoesNotThrow(() => _ = target.Error);
+    }
+
+    [Test]
+    public void Error_Returns_The_Error_When_Operation_Is_Failed_With_One_Error()
+    {
+      // ARRANGE
+      var target = OperationResult<string, string>.CreateFailure("something bad happened!");
+
+      // ACT
+      var result = target.Error;
+
+      // ASSERT
+      Assert.AreEqual("something bad happened!", result);
+    }
+
+    [Test]
+    public void Error_Returns_First_Error_When_Operation_Is_Failed_With_Several_Errors()
+    {
+      // ARRANGE
+      var errors = new NonEmptySequence<string>(new[] { "something bad happened!", "kaboom!" });
+      var target = OperationResult<string, string>.CreateFailure(errors);
+
+      // ACT
+      var result = target.Error;
+
+      // ASSERT
+      Assert.AreEqual("something bad happened!", result);
+    }
   }
 }

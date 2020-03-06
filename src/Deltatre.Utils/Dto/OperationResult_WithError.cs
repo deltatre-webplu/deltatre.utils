@@ -77,6 +77,27 @@ namespace Deltatre.Utils.Dto
       }
     }
 
+    /// <summary>
+    /// Gets the first error contained in the errors list for the operation.
+    /// Accessing this property throws <see cref="InvalidOperationException"/> when property <see cref="IsSuccess"/> is <see langword="true"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Throws <see cref="InvalidOperationException"/> when property <see cref="IsSuccess"/> is <see langword="true"/>.
+    /// </exception>
+    public TError Error 
+    {
+      get 
+      {
+        if (this.IsSuccess) 
+        {
+          throw new InvalidOperationException(
+            "Reading the error is not allowed because the operation succeed.");
+        }
+
+        return this.Errors[0];
+      }
+    }
+
 		/// <summary>
 		/// All the detected errors. In case of successfull operation this collection will be empty.
 		/// </summary>

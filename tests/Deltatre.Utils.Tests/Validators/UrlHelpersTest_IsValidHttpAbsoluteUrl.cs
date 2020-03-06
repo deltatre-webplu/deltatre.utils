@@ -1,18 +1,18 @@
-﻿using Deltatre.Utils.Validators;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using static Deltatre.Utils.Validators.UrlHelpers;
 
 namespace Deltatre.Utils.Tests.Validators
 {
   [TestFixture]
-  public class UrlHelpersTest
+  public partial class UrlHelpersTest
   {
     [TestCase(null)]
     [TestCase("")]
     [TestCase("    ")]
-    public void IsValidAbsoluteUrl_Returns_False_If_Value_Is_Null_Or_White_Space(string value)
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Is_Null_Or_White_Space(string value)
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl(value);
+      var result = IsValidHttpAbsoluteUrl(value);
 
       // ASSERT
       Assert.IsFalse(result);
@@ -44,10 +44,10 @@ namespace Deltatre.Utils.Tests.Validators
     [TestCase("http://www.facebook.com:800/foo/bar/?key=value&pippo=pluto")]
     [TestCase("http://www.facebook.com:800/foo/bar/?key=value&pippo=pluto#somewhere")]
     [TestCase("http://www.facebook.com:800/foo/bar/index.html")]
-    public void IsValidAbsoluteUrl_Returns_True_If_Value_Is_Http_Absolute_Url(string value)
+    public void IsValidHttpAbsoluteUrl_Returns_True_If_Value_Is_Http_Absolute_Url(string value)
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl(value);
+      var result = IsValidHttpAbsoluteUrl(value);
 
       // ASSERT
       Assert.IsTrue(result);
@@ -79,13 +79,13 @@ namespace Deltatre.Utils.Tests.Validators
     [TestCase("https://www.facebook.com:800/foo/bar/?key=value&pippo=pluto")]
     [TestCase("https://www.facebook.com:800/foo/bar/?key=value&pippo=pluto#somewhere")]
     [TestCase("https://www.facebook.com:800/foo/bar/index.html")]
-    public void IsValidAbsoluteUrl_Returns_True_If_Value_Is_Https_Absolute_Url(string value)
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Is_Https_Absolute_Url(string value)
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl(value);
+      var result = IsValidHttpAbsoluteUrl(value);
 
       // ASSERT
-      Assert.IsTrue(result);
+      Assert.IsFalse(result);
     }
 
     [TestCase("hello")]
@@ -102,40 +102,40 @@ namespace Deltatre.Utils.Tests.Validators
     [TestCase("https")]
     [TestCase("https://")]
     [TestCase("Some Random text 1 here !!! ()/89")]
-    public void IsValidAbsoluteUrl_Returns_False_If_Value_Is_Not_Url(string value)
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Is_Not_Url(string value)
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl(value);
+      var result = IsValidHttpAbsoluteUrl(value);
 
       // ASSERT
       Assert.IsFalse(result);
     }
 
     [Test]
-    public void IsValidAbsoluteUrl_Returns_False_If_Value_Has_Protocol_Other_Than_Http_And_Https()
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Has_Protocol_Other_Than_Http_And_Https()
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl("ftp://ftp.funet.fi/pub/standards/RFC/rfc959.txt");
+      var result = IsValidHttpAbsoluteUrl("ftp://ftp.funet.fi/pub/standards/RFC/rfc959.txt");
 
       // ASSERT
       Assert.IsFalse(result);
     }
 
     [Test]
-    public void IsValidAbsoluteUrl_Returns_False_If_Value_Has_Implicit_Protocol()
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Has_Implicit_Protocol()
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl("//developer.mozilla.org/en-US/docs/Learn");
+      var result = IsValidHttpAbsoluteUrl("//developer.mozilla.org/en-US/docs/Learn");
 
       // ASSERT
       Assert.IsFalse(result);
     }
 
     [Test]
-    public void IsValidAbsoluteUrl_Returns_False_If_Value_Has_Implicit_HostName()
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Has_Implicit_HostName()
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl("/en-US/docs/Learn");
+      var result = IsValidHttpAbsoluteUrl("/en-US/docs/Learn");
 
       // ASSERT
       Assert.IsFalse(result);
@@ -143,10 +143,10 @@ namespace Deltatre.Utils.Tests.Validators
 
     [TestCase("Skills/Infrastructure/Understanding_URLs")]
     [TestCase("../CSS/display")]
-    public void IsValidAbsoluteUrl_Returns_False_If_Value_Is_Relative_Url(string value)
+    public void IsValidHttpAbsoluteUrl_Returns_False_If_Value_Is_Relative_Url(string value)
     {
       // ACT
-      var result = UrlHelpers.IsValidAbsoluteUrl(value);
+      var result = IsValidHttpAbsoluteUrl(value);
 
       // ASSERT
       Assert.IsFalse(result);
