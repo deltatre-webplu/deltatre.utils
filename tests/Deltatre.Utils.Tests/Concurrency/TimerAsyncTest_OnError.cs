@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Deltatre.Utils.Concurrency;
@@ -28,22 +27,24 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        var mock = new Mock<ILogger>();
+        mock.Setup(m => m.Log(It.IsAny<string>())).Verifiable();
+        target.OnError += (object sender, Exception e) => mock.Object.Log($"An error occurred {e.Message}");
 
-      var mock = new Mock<ILogger>();
-      mock.Setup(m => m.Log(It.IsAny<string>())).Verifiable();
-      target.OnError += (object sender, Exception e) => mock.Object.Log($"An error occurred {e.Message}");
+        // ACT
+        target.Start();
 
-      // ACT
-      target.Start();
-      await Task.Delay(2500).ConfigureAwait(false);
+        await Task.Delay(2500).ConfigureAwait(false);
 
-      // ASSERT
-      mock.Verify(m => m.Log(It.IsAny<string>()), Times.Once());
-      mock.Verify(m => m.Log("An error occurred KABOOM !"), Times.Once());
+        // ASSERT
+        mock.Verify(m => m.Log(It.IsAny<string>()), Times.Once());
+        mock.Verify(m => m.Log("An error occurred KABOOM !"), Times.Once());
+      }
     }
 
     [Test]
@@ -57,46 +58,24 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
-
-      var mock = new Mock<ILogger>();
-      mock.Setup(m => m.Log(It.IsAny<string>())).Verifiable();
-      target.OnError += (object sender, Exception e) => mock.Object.Log($"An error occurred {e.Message}");
-
-      // ACT
-      target.Start();
-      await Task.Delay(2500).ConfigureAwait(false);
-      await target.Stop().ConfigureAwait(false);
-      await Task.Delay(2500).ConfigureAwait(false);
-
-      // ASSERT
-      mock.Verify(m => m.Log(It.IsAny<string>()), Times.Never());
-    }
-
-    public interface ILogger
-    {
-      void Log(string message);
-    }
-
-    public class TestException : Exception
-    {
-      public TestException()
+        TimeSpan.FromMilliseconds(500)))
       {
-      }
+        var mock = new Mock<ILogger>();
+        mock.Setup(m => m.Log(It.IsAny<string>())).Verifiable();
+        target.OnError += (object sender, Exception e) => mock.Object.Log($"An error occurred {e.Message}");
 
-      public TestException(string message) : base(message)
-      {
-      }
+        // ACT
+        target.Start();
+        await Task.Delay(2500).ConfigureAwait(false);
+        await target.Stop().ConfigureAwait(false);
 
-      public TestException(string message, Exception innerException) : base(message, innerException)
-      {
-      }
+        await Task.Delay(2500).ConfigureAwait(false);
 
-      protected TestException(SerializationInfo info, StreamingContext context) : base(info, context)
-      {
+        // ASSERT
+        mock.Verify(m => m.Log(It.IsAny<string>()), Times.Never());
       }
     }
   }

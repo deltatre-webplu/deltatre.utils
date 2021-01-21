@@ -23,47 +23,50 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        // ACT
+        target.Start();
 
-      // ACT
-      target.Start();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
+        await target.Stop().ConfigureAwait(false);
 
-      await target.Stop().ConfigureAwait(false);
-      var snapshot1 = values.ToArray();
+        var snapshot1 = values.ToArray();
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
-      var snapshot2 = values.ToArray();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
+        var snapshot2 = values.ToArray();
 
-      // ASSERT
-      Assert.GreaterOrEqual(snapshot1.Length, 2);
-      Assert.IsTrue(snapshot1.All(i => i == 1));
-      CollectionAssert.AreEqual(snapshot1, snapshot2);
+        // ASSERT
+        Assert.GreaterOrEqual(snapshot1.Length, 2);
+        Assert.IsTrue(snapshot1.All(i => i == 1));
+        CollectionAssert.AreEqual(snapshot1, snapshot2);
+      }
     }
 
     [Test]
     public void Stop_Can_Be_Called_More_Than_Once_Without_Throwing_Exceptions()
     {
       // ARRANGE
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         _ => Task.CompletedTask,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
-
-      // ASSERT
-      Assert.DoesNotThrowAsync(async () =>
+        TimeSpan.FromMilliseconds(500)))
       {
-        target.Start();
+        // ASSERT
+        Assert.DoesNotThrowAsync(async () =>
+        {
+          target.Start();
 
-        await Task.Delay(1200).ConfigureAwait(false);
+          await Task.Delay(1200).ConfigureAwait(false);
 
-        await target.Stop().ConfigureAwait(false);
-        await target.Stop().ConfigureAwait(false);
-      });
+          await target.Stop().ConfigureAwait(false);
+          await target.Stop().ConfigureAwait(false);
+        });
+      }
     }
 
     [Test]
@@ -78,28 +81,30 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        // ACT
+        target.Start();
 
-      // ACT
-      target.Start();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
+        await target.Stop().ConfigureAwait(false);
+        await target.Stop().ConfigureAwait(false);
+        var snapshot1 = values.ToArray();
 
-      await target.Stop().ConfigureAwait(false);
-      await target.Stop().ConfigureAwait(false);
-      var snapshot1 = values.ToArray();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
+        await target.Stop().ConfigureAwait(false);
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
-      await target.Stop().ConfigureAwait(false);
-      var snapshot2 = values.ToArray();
+        var snapshot2 = values.ToArray();
 
-      // ASSERT
-      Assert.GreaterOrEqual(snapshot1.Length, 2);
-      Assert.IsTrue(snapshot1.All(i => i == 1));
-      CollectionAssert.AreEqual(snapshot1, snapshot2);
+        // ASSERT
+        Assert.GreaterOrEqual(snapshot1.Length, 2);
+        Assert.IsTrue(snapshot1.All(i => i == 1));
+        CollectionAssert.AreEqual(snapshot1, snapshot2);
+      }
     }
 
     [Test]
@@ -114,49 +119,50 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
-
-      bool run = true;
-
-      var thread1 = new Thread(() =>
+        TimeSpan.FromMilliseconds(500)))
       {
-        while (run)
+        bool run = true;
+
+        var thread1 = new Thread(() =>
         {
-          target.Stop().Wait();
-        }
-      });
+          while (run)
+          {
+            target.Stop().Wait();
+          }
+        });
 
-      var thread2 = new Thread(() =>
-      {
-        while (run)
+        var thread2 = new Thread(() =>
         {
-          target.Stop().Wait();
-        }
-      });
+          while (run)
+          {
+            target.Stop().Wait();
+          }
+        });
 
-      var threads = new[] { thread1, thread2 };
+        var threads = new[] { thread1, thread2 };
 
-      // ACT
-      target.Start();
+        // ACT
+        target.Start();
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
 
-      threads.ForEach(t => t.Start());
-      await Task.Delay(2000).ConfigureAwait(false);
-      run = false;
-      threads.ForEach(t => t.Join());
-      var snapshot1 = values.ToArray();
+        threads.ForEach(t => t.Start());
+        await Task.Delay(2000).ConfigureAwait(false);
+        run = false;
+        threads.ForEach(t => t.Join());
+        var snapshot1 = values.ToArray();
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
-      var snapshot2 = values.ToArray();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
+        var snapshot2 = values.ToArray();
 
-      // ASSERT
-      Assert.GreaterOrEqual(snapshot1.Length, 2);
-      Assert.IsTrue(snapshot1.All(i => i == 1));
-      CollectionAssert.AreEqual(snapshot1, snapshot2);
+        // ASSERT
+        Assert.GreaterOrEqual(snapshot1.Length, 2);
+        Assert.IsTrue(snapshot1.All(i => i == 1));
+        CollectionAssert.AreEqual(snapshot1, snapshot2);
+      }
     }
 
     [Test]
@@ -177,18 +183,19 @@ namespace Deltatre.Utils.Tests.Concurrency
     public void Stop_Can_Be_Called_Before_Start_Without_Throwing_Exceptions()
     {
       // ARRANGE
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         _ => Task.CompletedTask,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
-
-      // ASSERT
-      Assert.DoesNotThrowAsync(async () =>
+        TimeSpan.FromMilliseconds(500)))
       {
-        await target.Stop().ConfigureAwait(false);
-        target.Start();
-        await Task.Delay(1200).ConfigureAwait(false);
-      });
+        // ASSERT
+        Assert.DoesNotThrowAsync(async () =>
+        {
+          await target.Stop().ConfigureAwait(false);
+          target.Start();
+          await Task.Delay(1200).ConfigureAwait(false);
+        });
+      }
     }
 
     [Test]
@@ -203,27 +210,29 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        // ACT
+        await target.Stop().ConfigureAwait(false);
+        target.Start();
 
-      // ACT
-      await target.Stop().ConfigureAwait(false);
-      target.Start();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice
+        await target.Stop().ConfigureAwait(false);
 
-      await target.Stop().ConfigureAwait(false);
-      var snapshot1 = values.ToArray();
+        var snapshot1 = values.ToArray();
 
-      await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
-      var snapshot2 = values.ToArray();
+        await Task.Delay(1200).ConfigureAwait(false); // in 1200 milliseconds we are sure that action is called at least twice (but now the timer is stopped)
+        var snapshot2 = values.ToArray();
 
-      // ASSERT
-      Assert.GreaterOrEqual(snapshot1.Length, 2);
-      Assert.IsTrue(snapshot1.All(i => i == 1));
-      CollectionAssert.AreEqual(snapshot1, snapshot2);
+        // ASSERT
+        Assert.GreaterOrEqual(snapshot1.Length, 2);
+        Assert.IsTrue(snapshot1.All(i => i == 1));
+        CollectionAssert.AreEqual(snapshot1, snapshot2);
+      }
     }
   }
 }

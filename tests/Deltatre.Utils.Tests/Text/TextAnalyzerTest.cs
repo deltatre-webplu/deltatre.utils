@@ -868,7 +868,7 @@ namespace Deltatre.Utils.Tests.Text
 		}
 
 
-		private TextAnalyzer CreateTarget()
+		private static TextAnalyzer CreateTarget()
 		{
 			return new TextAnalyzer();
 		}

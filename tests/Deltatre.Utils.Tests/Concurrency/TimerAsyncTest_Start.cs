@@ -22,35 +22,38 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        // ACT
+        target.Start();
 
-      // ACT
-      target.Start();
-      await Task.Delay(1200).ConfigureAwait(false); // wait for the execution of background workload at least two times
+        await Task.Delay(1200).ConfigureAwait(false); // wait for the execution of background workload at least two times
 
-      // ASSERT
-      Assert.GreaterOrEqual(2, values.Count);
-      Assert.IsTrue(values.All(value => value == 1));
+        // ASSERT
+        Assert.GreaterOrEqual(2, values.Count);
+        Assert.IsTrue(values.All(value => value == 1));
+      } 
     }
 
     [Test]
     public void Start_Can_Be_Called_More_Than_Once_Without_Throwing_Exceptions()
     {
       // ARRANGE
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         _ => Task.CompletedTask,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
-
-      // ASSERT
-      Assert.DoesNotThrow(() =>
+        TimeSpan.FromMilliseconds(500)))
       {
-        target.Start();
-        target.Start();
-      });
+        // ASSERT
+        Assert.DoesNotThrow(() =>
+        {
+          target.Start();
+          target.Start();
+        });
+      }
     }
 
     [Test]
@@ -64,19 +67,21 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        // ACT
+        target.Start();
+        target.Start();
 
-      // ACT
-      target.Start();
-      target.Start();
-      await Task.Delay(1200).ConfigureAwait(false);
+        await Task.Delay(1200).ConfigureAwait(false);
 
-      // ASSERT
-      Assert.GreaterOrEqual(2, values.Count);
-      Assert.IsTrue(values.All(value => value == 1));
+        // ASSERT
+        Assert.GreaterOrEqual(2, values.Count);
+        Assert.IsTrue(values.All(value => value == 1));
+      }
     }
 
     [Test]
@@ -90,40 +95,41 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        TimeSpan.FromMilliseconds(500));
-
-      bool run = true;
-
-      var thread1 = new Thread(() =>
+        TimeSpan.FromMilliseconds(500)))
       {
-        while (run)
+        bool run = true;
+
+        var thread1 = new Thread(() =>
         {
-          target.Start();
-        }
-      });
+          while (run)
+          {
+            target.Start();
+          }
+        });
 
-      var thread2 = new Thread(() =>
-      {
-        while (run)
+        var thread2 = new Thread(() =>
         {
-          target.Start();
-        }
-      });
+          while (run)
+          {
+            target.Start();
+          }
+        });
 
-      var threads = new[] { thread1, thread2 };
+        var threads = new[] { thread1, thread2 };
 
-      // ACT
-      threads.ForEach(t => t.Start());
-      await Task.Delay(1200).ConfigureAwait(false);
-      run = false;
-      threads.ForEach(t => t.Join());
+        // ACT
+        threads.ForEach(t => t.Start());
+        await Task.Delay(1200).ConfigureAwait(false);
+        run = false;
+        threads.ForEach(t => t.Join());
 
-      // ASSERT
-      Assert.GreaterOrEqual(2, values.Count);
-      Assert.IsTrue(values.All(value => value == 1));
+        // ASSERT
+        Assert.GreaterOrEqual(2, values.Count);
+        Assert.IsTrue(values.All(value => value == 1));
+      }
     }
 
     [Test]
@@ -151,17 +157,19 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         TimeSpan.FromMilliseconds(500),
-        Timeout.InfiniteTimeSpan);
+        Timeout.InfiniteTimeSpan))
+      {
+        // ACT
+        target.Start();
 
-      // ACT
-      target.Start();
-      await Task.Delay(2000).ConfigureAwait(false);
+        await Task.Delay(2000).ConfigureAwait(false);
 
-      // ASSERT
-      CollectionAssert.AreEqual(new[] { 1 }, values);
+        // ASSERT
+        CollectionAssert.AreEqual(new[] { 1 }, values);
+      }
     }
 
     [Test]
@@ -175,17 +183,19 @@ namespace Deltatre.Utils.Tests.Concurrency
         return Task.CompletedTask;
       };
 
-      var target = new TimerAsync(
+      using (var target = new TimerAsync(
         action,
         Timeout.InfiniteTimeSpan,
-        TimeSpan.FromMilliseconds(500));
+        TimeSpan.FromMilliseconds(500)))
+      {
+        // ACT
+        target.Start();
 
-      // ACT
-      target.Start();
-      await Task.Delay(2000).ConfigureAwait(false);
+        await Task.Delay(2000).ConfigureAwait(false);
 
-      // ASSERT
-      CollectionAssert.IsEmpty(values);
+        // ASSERT
+        CollectionAssert.IsEmpty(values);
+      }
     }
   }
 }

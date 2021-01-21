@@ -59,7 +59,7 @@ namespace Deltatre.Utils.Text
 			return cultureInfo.TextInfo;
 		}
 
-		private int CalculateWordCount(string text)
+		private static int CalculateWordCount(string text)
 		{
 			var collection = Regex.Matches(text, @"[\S]+");
 			return collection.Count;
